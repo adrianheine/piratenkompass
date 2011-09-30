@@ -1,8 +1,89 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    margin: 1.5em;
+    font: 100%/1.5 Georgia, serif;
+    background-color: #F9FFD9;
+}
+
+h1 {
+    font-size: 1.5em;
+    padding-bottom: 0.5em;
+}
+
+h2 {
+    font-family:"Lucida Grande","Lucida Sans Unicode",sans-serif;
+    font-size: 1em;
+    letter-spacing: 1px;
+    margin: 1.5em 0.75em 0.75em;
+    /* text-shadow: 1.5em -0.5em 1px #9CCF4C; */
+}
+
+#footer, h1, .antispam {
+    color: #a0d040;
+}
+
+table {
+    margin: 0.8em;
+}
+
+th {
+    vertical-align: top;
+    text-align: right;
+    color: #d0a040;
+    width: 9em;
+}
+
+th, td {
+    /* Add space between rows. */
+    padding: 0.8em 0.8em 0.8em 0;
 }
 
 a {
-  color: #00B7FF;
+    text-decoration: none;
+    color: #40a0d0;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+#footer {
+    border-top:0.1em solid;
+    clear:right;
+    float:right;
+    margin-top:0.9em;
+    padding:0.1em 0 0 5em;
+    text-align: right;
+}
+
+ul {
+    list-style-type:none;
+}
+
+pre, ul {
+    margin:1em 0;
+}
+
+li {
+    border-left: 0.3em solid #D0A040;
+    border-right: 0.3em solid #D0A040;
+    margin: 0.5em 0;
+    padding: 0 0.5em;
+}
+
+.identifier {
+    color: #d0a040;
+}
+
+ul.horlist li {
+    display: inline;
+    border-right: none;
+}
+
+p {
+    padding-bottom: 0.5em;
 }

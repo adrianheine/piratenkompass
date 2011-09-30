@@ -1,6 +1,25 @@
-!!!
-html
+!!! 5
+html(lang='de')
   head
-    title= title
+    meta(charset='utf-8')
+    title #{title} | Piratenkompass
     link(rel='stylesheet', href='/stylesheets/style.css')
-  body!= body
+  body
+    ul(style="text-align: center;", class="horlist")
+        li: a(href="?t=display", title="Seite mit PNG-Bild und CSS") PNG-Version
+        li: a(href="?t=big", title="Seite mit SVG-Bild") SVG-Version
+        li: a(href="?t=svg", title="SVG-Bild") SVG solo
+        li: a(href="?t=raw", title="Rohdaten als CSV") Rohdaten
+        li: a(href="?t=source", title="Quelltext") Quelltext
+    !{body}
+    #footer
+      | Adrian Lang (<a href="https://adrianlang.de/id">id</a>), 2009–2011
+      script
+        var flattr_url = 'http://adrianlang.de/piratenkompass/';
+        var flattr_btn = 'compact';
+      script(src='#{protocol}://api.flattr.com/button/load.js')
+      noscript
+        a(href='//flattr.com/thing/3572/Piratenkompass')
+          img(src='//api.flattr.com/button/button-compact-static-100x17.png', title='Flattr this', border='0')
+      br
+      | SVG-Code: Stephan Beyer (<a href="http://pkqs.net/~sbeyer/">homepage</a>), 2009
