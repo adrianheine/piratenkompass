@@ -4,7 +4,9 @@ var http = require('http'),
     host = 'wiki.piratenpartei.de',
     category = 'Benutzer hat politischen Kompass',
     ns_text = 'Benutzer:',
-    ns = new RegExp('^' + ns_text);
+    ns = new RegExp('^' + ns_text),
+    exports = module.exports = {},
+    wiki = exports;
 
 function getRes(path, ncb) {
     http.get({host: host,
@@ -22,55 +24,43 @@ function getRes(path, ncb) {
              });
 }
 
-function getCatMembers(cb_datahandler, ncb_finishhandler) {
-    var expect = [], res = [];
-
-    function ncb_register_done(state, err, val) {
-        if (err) {
-            return ncb_finishhandler(err);
-        }
-
-        res.push(val);
-        expect = lib.without(expect, state);
-        if (expect.length === 0) {
-            return ncb_finishhandler(null, lib.flattenOnce(res));
-        }
-    }
-
-    function _getCatMembers(state) {
-        state = state || '';
-
-        expect.push(state);
-        getRes('/wiki/api.php?action=query'
+exports.getCatMembers = function (cb_datahandler, ncb_finishhandler) {
+    var path = '/wiki/api.php?action=query'
                           + '&list=categorymembers'
-                          + '&cmtitle=Category:' + encodeURIComponent(category)
+                          + '&cmtitle=' + encodeURIComponent('Category:' + category)
                           + '&format=json'
                           + '&cmlimit=max'
-                          + '&cmcontinue=' + encodeURIComponent(state),
-                function (err, data) {
-                    var content = JSON.parse(data);
-                    if (content['query-continue']) {
-                        _getCatMembers(content['query-continue'].categorymembers.cmcontinue);
-                    }
-                    cb_datahandler(content.query.categorymembers,
-                                   ncb_register_done.bind(undefined, state));
-                });
-    }
+                          + '&cmcontinue=';
 
-    _getCatMembers();
+    lib.iterativeParallel(function (state, add_task, ncb_register_done) {
+        getRes(path + encodeURIComponent(state), function (err, data) {
+            var content = JSON.parse(data);
+
+            if (content['query-continue']) {
+                add_task(content['query-continue'].categorymembers.cmcontinue);
+            }
+
+            cb_datahandler(content.query.categorymembers, ncb_register_done);
+        });
+    }, function (err, res) {
+        return ncb_finishhandler(err, lib.flattenOnce(res));
+    }, '');
 }
 
-function getPage(page, ncb) {
+exports.getPage = function (page, ncb) {
     getRes('/' + encodeURIComponent(page) + '?action=raw',
            ncb);
 }
 
 function getUsersInCat(cb_datahandler, ncb_finishhandler) {
-    getCatMembers(function (members, ncb_register_done) {
-                     cb_datahandler(members.filter(function (item) { return item.ns === 2; })
-                                           .map(function (item) { return item.title.replace(ns, ''); }),
-                                    ncb_register_done);
-                  }, ncb_finishhandler);
+    wiki.getCatMembers(function (members, ncb_register_done) {
+        var users = members.filter(function (item) {
+            return item.ns === 2;
+        }).map(function (item) {
+            return item.title.replace(ns, '').match(/^([^\/]+)/)[1];
+        });
+        cb_datahandler(lib.uniq(users), ncb_register_done);
+    }, ncb_finishhandler);
 }
 
 function getUserPageURL(user) {
@@ -78,9 +68,8 @@ function getUserPageURL(user) {
 }
 
 exports.getUserPage = function (user, ncb) {
-    return getPage(ns_text + user, ncb);
+    return wiki.getPage(ns_text + user, ncb);
 }
 
 exports.getUsersInCat = getUsersInCat;
-exports.getPage = getPage;
 exports.getUserPageURL = getUserPageURL;

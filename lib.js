@@ -1,4 +1,5 @@
-var exports = module.exports = require('./underscore/underscore-min.js');
+var exports = module.exports = require('./underscore/underscore-min.js'),
+    lib = exports;
 
 exports.Do = require('do');
 
@@ -35,3 +36,28 @@ function firstHandler(handlers, test_func) {
 
 exports.o = o;
 exports.not = not;
+
+exports.iterativeParallel = function (taskhandler, ncb_finishhandler, start_state) {
+    var expect = [], overall_res = [];
+
+    function ncb_register_done(state, err, res) {
+        if (err) {
+            return ncb_finishhandler(err);
+        }
+
+        overall_res.push(res);
+        expect = lib.without(expect, state);
+        if (expect.length === 0) {
+            return ncb_finishhandler(null, overall_res);
+        }
+    }
+
+    function start_task(state) {
+        expect.push(state);
+
+        return taskhandler(state, start_task,
+                           ncb_register_done.bind(null, state));
+    }
+
+    start_task(start_state);
+};

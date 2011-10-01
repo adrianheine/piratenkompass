@@ -1,16 +1,10 @@
-var wiki = require('./wiki'),
+var wiki = require('./wiki_mock'),
     kompass = require('./kompass'),
     lib = require('./lib');
 
 function getKompassdata(ncb_callback) {
     wiki.getUsersInCat(function (users, ncb_register_done) {
-        // FIXME move to wiki
-        var uname = /^([^\/]+)/;
-        users = users.map(function (u) {
-            return u.match(uname)[1];
-        }).filter(lib.o(lib.not, kompass.is_blacklisted));
-
-        users = lib.uniq(users);
+        users = users.filter(lib.o(lib.not, kompass.is_blacklisted));
 
         lib.Do.map(users, function (item, dcb_callback, deb_errback) {
             kompass.get_kompass(function (user, ncb_callback) {
