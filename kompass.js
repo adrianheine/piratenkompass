@@ -66,8 +66,8 @@ function get_kompass(kompass_getter, user, ncb_kompasshandler) {
 /**
  * Default callback for static lookup
  */
-function get_static_kompass(u, callback) {
-    callback(undefined, static_kompass[u] || null);
+function get_static_kompass(u, ncb_callback) {
+    ncb_callback(undefined, static_kompass[u] || null);
 }
 
 function parse_page(page, ncb_callback) {

@@ -1,9 +1,9 @@
-var wiki = require('./wiki_mock'),
+var wiki = require('./wiki'),
     kompass = require('./kompass'),
     lib = require('./lib');
 
 function getKompassdata(ncb_callback) {
-    wiki.getUsersInCat(function (users) {
+    wiki.getUsersInCat(function (users, ncb_register_done) {
         // FIXME move to wiki
         var uname = /^([^\/]+)/;
         users = users.map(function (u) {
@@ -14,7 +14,7 @@ function getKompassdata(ncb_callback) {
 
         lib.Do.map(users, function (item, dcb_callback, deb_errback) {
             kompass.get_kompass(function (user, ncb_callback) {
-                wiki.getPage(user, function (err, page) {
+                wiki.getUserPage(user, function (err, page) {
                     if (err) {
                         ncb_callback(err);
                     } else {
@@ -25,11 +25,11 @@ function getKompassdata(ncb_callback) {
                 return dcb_callback({name: item, compass: val || err});
             });
         })(function (result) {
-            ncb_callback(null, result);
+            ncb_register_done(null, result);
         }, function (err) {
-            throw err;
+            ncb_register_done(err);
         });
-    });
+    }, ncb_callback);
 }
 
 exports.getKompassdata = getKompassdata;

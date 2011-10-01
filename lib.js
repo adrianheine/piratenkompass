@@ -9,6 +9,11 @@ exports.mapValues = function (inp, mapper) {
         }, {});
 };
 
+exports.flattenOnce = function (inp) {
+    var _ret = [];
+    return _ret.concat.apply(_ret, inp);
+};
+
 function o(a, b) {
     return function () {
         return a(b.apply(this, arguments));
