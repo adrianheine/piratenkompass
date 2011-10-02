@@ -47,7 +47,7 @@ function out(getData, res) {
                 err_users: lib.pluck(users_data.fail, 'name')
             };
 
-        res.contentType('image/svg+xml');
+        res.contentType('svg');
         res.render('graph.svg.jade', params);
     });
 }
