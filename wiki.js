@@ -64,7 +64,7 @@ function getUsersInCat(cb_datahandler, ncb_finishhandler) {
 }
 
 function getUserPageURL(user) {
-    return 'http://' + host + '/wiki/' + encodeURIComponent(ns_text + user);
+    return 'http://' + host + '/' + encodeURIComponent(ns_text + user);
 }
 
 exports.getUserPage = function (user, ncb) {
