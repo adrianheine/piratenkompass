@@ -4,7 +4,9 @@ var fs = require('fs'),
 var exports = module.exports = require('./wiki');
 
 exports.getPage = function (page, ncb) {
-    fs.readFile('/home/adrian/piratenkompass/cache/' + page.replace(/^Benutzer:/, ''),
+    fs.readFile('/home/adrian/piratenkompass/cache/' +
+                encodeURIComponent(page.replace(/^Benutzer:/, '')
+                          .replace(/(\.)|(\.\.)|(\/)|(:)/g, '__')).replace(/%20/g, '+'),
                 function(err, file) {
                     ncb(undefined, (file || '').toString());
                 });
