@@ -16,7 +16,13 @@ function getKompassdata(ncb_callback) {
                     }
                 });
             }, item, function (err, val) {
-                return dcb_callback({name: item, compass: val || err});
+                var ret = {name: item};
+                if (err) {
+                    ret.error = true;
+                } else {
+                    ret.compass = val;
+                }
+                return dcb_callback(ret);
             });
         })(function (result) {
             ncb_register_done(null, result);

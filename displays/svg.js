@@ -10,35 +10,45 @@ function getCoords(inp) {
 function out(getData, res) {
 
     getData(function (err, data) {
-        var params = {layout: false};
+        var users_data = lib.groupBy(data, function (compass) {
+                return 'compass' in compass ? 'success' : 'fail';
+            }),
 
-        // map ranges
-        params.ranges = lib.mapValues({80: null, 90: null}, function (range) {
-            return displays.getRange(lib.pluck(data, 'compass'), range);
-        });
+            sums = {ec: 0, soc: 0},
 
-        params.compasses = lib.map(data, function (compass) {
-            return {
-                name: compass.name,
-                compass: compass.compass,
-                url: wiki.getUserPageURL(compass.name),
-                coords: getCoords(compass.compass)
+            params = {
+                layout: false,
+
+                // map ranges
+                ranges: lib.mapValues({80: null, 90: null}, function (_, range) {
+                    return lib.mapValues(displays.getRange(lib.pluck(users_data.success, 'compass'), range),
+                                         getCoords);
+                }),
+
+                // individual compasses
+                compasses: users_data.success.map(function (compass) {
+                    sums.ec += compass.compass.ec;
+                    sums.soc += compass.compass.soc;
+
+                    return {
+                        name: compass.name,
+                        compass: compass.compass,
+                        url: wiki.getUserPageURL(compass.name),
+                        coords: getCoords(compass.compass)
+                    };
+                }),
+
+                // average
+                avg: getCoords(lib.mapValues(sums, function (v) {
+                    return v / data.length;
+                })),
+
+                // error users
+                err_users: lib.pluck(users_data.fail, 'name')
             };
-        });
 
         res.contentType('image/svg+xml');
         res.render('graph.svg.jade', params);
-    /*
-        ?>
-        </g>
-        <?php
-            # Durchschnitt
-            $no = count($this->compass_data);
-            list($x, $y) = $this->_get_cords($this->sum['pc_soc'] / $no, $this->sum['pc_ec'] / $no);
-            echo "\n".'<line style="fill:none; stroke:#ffff00" x1="'.($x-5).'" y1="'.($y-5).'" x2="'.($x+5).'" y2="'.($y+5).'" />';
-            echo "\n".'<line style="fill:none; stroke:#ffff00" x1="'.($x-5).'" y1="'.($y+5).'" x2="'.($x+5).'" y2="'.($y-5).'" />';
-            echo "\n</svg>";
-    */
     });
 }
 

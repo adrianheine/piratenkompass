@@ -73,7 +73,7 @@ function get_static_kompass(u, ncb_callback) {
 function parse_page(page, ncb_callback) {
     var ret = {};
     while( match = parse_regex.exec(page)) {
-        ret[match[1].toLowerCase()] = parseFloat(match[2]);
+        ret[match[1].toLowerCase()] = parseFloat(match[2].replace(' ', ''));
     }
     ncb_callback(undefined, ('ec' in ret && 'soc' in ret) ? ret : null);
 }

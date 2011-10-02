@@ -22,13 +22,16 @@ svg(xmlns:svg='http://www.w3.org/2000/svg', xmlns='http://www.w3.org/2000/svg',
     text(x='0', y='-102', text-anchor='middle', style='font-size:12px; font-family:sans-serif') autoritär
     text(x='0', y='113',  text-anchor='middle', style='font-size:12px; font-family:sans-serif') libertär
   - each r, percent in ranges
-    - r.width = r.x2 - r.x
-    - r.height = r.y2 - r.y
-    rect(style="fill-color:#000000; fill-opacity:0.25", x=r.x, y=r.y,
-         width=r.width, height=r.height, id="perc" + percent)
+    rect(style="fill-color:#000000; fill-opacity:0.25",
+         x=Math.min(r.from.x,r.to.x), y=Math.min(r.from.y,r.to.y),
+         width=Math.abs(r.to.x - r.from.x), height=Math.abs(r.from.y - r.to.y),
+         id="perc" + percent)
   g#benutzer
      - each compass in compasses
-         a(xlink:href=compass.url,
-           title='#{compass.name} – (soc: #{compass.compass.soc}, ec: #{compass.compass.ec})')
-           circle(cx=compass.coords.x, cy=compass.coords.y, r='1.5',
-                  style='fill:#ff0000; stroke:#000000; stroke-width:0.5px;')
+       a(xlink:href=compass.url,
+         title='#{compass.name} – (soc: #{compass.compass.soc}, ec: #{compass.compass.ec})')
+         circle(cx=compass.coords.x, cy=compass.coords.y, r='1.5',
+                style='fill:#ff0000; stroke:#000000; stroke-width:0.5px;')
+   g#durchschnitt
+     line(style='fill:none; stroke:#ffff00', x1=avg.x-5, y1=avg.y-5, x2=avg.x+5, y2=avg.y+5)
+     line(style='fill:none; stroke:#ffff00', x1=avg.x-5, y1=avg.y+5, x2=avg.x+5, y2=avg.y-5)
