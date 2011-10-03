@@ -1,5 +1,4 @@
 var displays = require('./displays'),
-    wiki = require('../wiki'),
     lib = require('../lib');
 
 function getCoords(inp) {
@@ -9,47 +8,21 @@ function getCoords(inp) {
 
 function out(getData, res) {
 
+//    async.waterfall([getData, displays.prepareViewData
     getData(function (err, data) {
-        var users_data = lib.groupBy(data, function (compass) {
-                return 'compass' in compass ? 'success' : 'fail';
-            }),
+        displays.prepareViewData(getCoords, data, {
+            layout: false,
 
-            sums = {ec: 0, soc: 0},
-
-            params = {
-                layout: false,
-
-                // map ranges
-                ranges: lib.mapValues({80: null, 90: null}, function (_, range) {
-                    return lib.mapValues(displays.getRange(lib.pluck(users_data.success, 'compass'), range),
-                                         getCoords);
-                }),
-
-                // individual compasses
-                // FIXME only when successes present
-                compasses: users_data.success.map(function (compass) {
-                    sums.ec += compass.compass.ec;
-                    sums.soc += compass.compass.soc;
-
-                    return {
-                        name: compass.name,
-                        compass: compass.compass,
-                        url: wiki.getUserPageURL(compass.name),
-                        coords: getCoords(compass.compass)
-                    };
-                }),
-
-                // average
-                avg: getCoords(lib.mapValues(sums, function (v) {
-                    return v / data.length;
-                })),
-
-                // error users
-                err_users: lib.pluck(users_data.fail, 'name')
-            };
-
-        res.contentType('svg');
-        res.render('graph.svg.jade', params);
+            // map ranges
+            ranges: null,
+            // individual compasses
+            compasses: null,
+            // average
+            avg: null
+        }, function (err, params) {
+            res.contentType('svg');
+            res.render('graph.svg.jade', params);
+        });
     });
 }
 
