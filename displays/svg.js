@@ -7,10 +7,9 @@ function getCoords(inp) {
 }
 
 function out(getData, res) {
-
-//    async.waterfall([getData, displays.prepareViewData
-    getData(function (err, data) {
-        displays.prepareViewData(getCoords, data, {
+    async.waterfall([
+        getData,
+        displays.prepareViewData.bind(undefined, getCoords, {
             layout: false,
 
             // map ranges
@@ -19,10 +18,10 @@ function out(getData, res) {
             compasses: null,
             // average
             avg: null
-        }, function (err, params) {
-            res.contentType('svg');
-            res.render('graph.svg.jade', params);
-        });
+        })
+    ], function (err, params) {
+        res.contentType('svg');
+        res.render('graph.svg.jade', params);
     });
 }
 

@@ -29,7 +29,7 @@ function getRange(data, percent) {
     });
 };
 
-exports.prepareViewData = function(getCoords, in_data, view_data, ncb_callback) {
+exports.prepareViewData = function(getCoords, view_data, in_data, ncb_callback) {
     var users_data = lib.groupBy(in_data, function (compass) {
             return 'compass' in compass ? 'success' : 'fail';
         });
