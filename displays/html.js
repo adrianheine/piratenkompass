@@ -3,26 +3,23 @@ var displays = require('./displays'),
     lib = require('../lib');
 
 function getCoords(inp) {
-    return {x: 10 *  inp.ec,
-            y: 10 * -inp.soc };
+    return {x: 109 - inp.soc * 9.5,
+            y: 123 + inp.ec * 9.5};
 }
 
 function out(getData, res) {
     async.waterfall([
         getData,
         displays.prepareViewData.bind(undefined, getCoords, {
-            layout: false,
+            title: 'HTML + CSS + PNG',
 
-            // map ranges
             ranges: null,
-            // individual compasses
             compasses: null,
-            // average
-            avg_coords: null
+            avg: null,
+            err_users: null,
         })
     ], function (err, params) {
-        res.contentType('svg');
-        res.render('graph.svg.jade', params);
+        res.render('html', params);
     });
 }
 

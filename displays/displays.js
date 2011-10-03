@@ -56,15 +56,18 @@ exports.prepareViewData = function(getCoords, view_data, in_data, ncb_callback) 
         }
 
         // average
-        if (view_data.avg === null) {
-            view_data.avg = getCoords(lib.mapValues(lib.reduce(users_data.success,
+        if (view_data.avg === null || view_data.avg_coords === null) {
+            view_data.avg = lib.mapValues(lib.reduce(users_data.success,
                                                                function (sums, compass) {
                 sums.ec += compass.compass.ec;
                 sums.soc += compass.compass.soc;
                 return sums;
             }, {ec: 0, soc: 0}), function (v) {
                 return v / users_data.success.length;
-            }));
+            });
+            if (view_data.avg_coords === null) {
+                view_data.avg_coords = getCoords(view_data.avg);
+            }
         }
     }
 
@@ -76,6 +79,9 @@ exports.prepareViewData = function(getCoords, view_data, in_data, ncb_callback) 
             view_data.err_users = [];
         }
     }
+
+    // FIXME
+    view_data.protocol = 'http';
 
     ncb_callback(null, view_data);
 };

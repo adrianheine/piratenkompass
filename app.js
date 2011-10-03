@@ -5,7 +5,7 @@
 
 var express = require('express'),
     piratenkompass = require('./piratenkompass'),
-    svg = require('./displays/svg');
+    svg = require('./displays/html');
 
 var app = module.exports = express.createServer();
 
@@ -17,7 +17,7 @@ app.configure(function () {
 //    app.use(express.bodyParser());
 //    app.use(express.methodOverride());
     app.use(app.router);
-    app.use(express.static(__dirname + '/public'));
+    app.use('/static', express.static(__dirname + '/static'));
 });
 
 app.configure('development', function () {
@@ -32,12 +32,6 @@ app.configure('production', function () {
 
 app.get('/', function (req, res) {
     svg.out(piratenkompass.getKompassdata, res);
-/*
-    res.render('index', {
-        title: 'Express',
-        protocol: 'http'
-    });
-*/
 });
 
 app.listen(3000);
