@@ -67,7 +67,7 @@ function get_kompass(kompass_getter, user, ncb_kompasshandler) {
  * Default callback for static lookup
  */
 function get_static_kompass(u, ncb_callback) {
-    ncb_callback(undefined, static_kompass[u] || null);
+    ncb_callback(null, static_kompass[u] || null);
 }
 
 function parse_page(page, ncb_callback) {
@@ -75,7 +75,7 @@ function parse_page(page, ncb_callback) {
     while( match = parse_regex.exec(page)) {
         ret[match[1].toLowerCase()] = parseFloat(match[2].replace(' ', ''));
     }
-    ncb_callback(undefined, ('ec' in ret && 'soc' in ret) ? ret : null);
+    ncb_callback(null, ('ec' in ret && 'soc' in ret) ? ret : null);
 }
 
 exports.is_blacklisted = is_blacklisted;

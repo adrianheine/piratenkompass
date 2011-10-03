@@ -8,7 +8,7 @@ exports.getPage = function (page, ncb) {
                 encodeURIComponent(page.replace(/^Benutzer:/, '')
                           .replace(/(\.)|(\.\.)|(\/)|(:)/g, '__')).replace(/%20/g, '+'),
                 function(err, file) {
-                    ncb(undefined, (file || '').toString());
+                    ncb(null, (file || '').toString());
                 });
 }
 

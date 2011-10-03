@@ -1,8 +1,6 @@
 var exports = module.exports = require('./underscore/underscore-min.js'),
     lib = exports;
 
-exports.Do = require('do');
-
 exports.mapValues = function (inp, mapper) {
     return exports.reduce(inp, function (obj, v, k) {
             obj[k] = mapper(v, k);

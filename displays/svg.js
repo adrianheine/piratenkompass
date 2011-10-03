@@ -26,6 +26,7 @@ function out(getData, res) {
                 }),
 
                 // individual compasses
+                // FIXME only when successes present
                 compasses: users_data.success.map(function (compass) {
                     sums.ec += compass.compass.ec;
                     sums.soc += compass.compass.soc;
