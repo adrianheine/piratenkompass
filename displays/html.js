@@ -7,19 +7,27 @@ function getCoords(inp) {
             y: 123 + inp.ec * 9.5};
 }
 
-function out(getData, res) {
+function out(getData, res, raw) {
+    var data = raw ? {
+        title: 'HTML + CSS + PNG',
+
+        layout: false,
+
+        ranges: null,
+        compasses: null
+    }: {
+        title: 'HTML + CSS + PNG',
+
+        ranges: null,
+        compasses: null,
+        avg: null,
+        err_users: null
+    };
     async.waterfall([
         getData,
-        displays.prepareViewData.bind(undefined, getCoords, {
-            title: 'HTML + CSS + PNG',
-
-            ranges: null,
-            compasses: null,
-            avg: null,
-            err_users: null,
-        })
+        displays.prepareViewData.bind(undefined, getCoords, data)
     ], function (err, params) {
-        res.render('html', params);
+        res.render((raw ? 'graph-wrapper' : 'page') + '.html.jade', params);
     });
 }
 

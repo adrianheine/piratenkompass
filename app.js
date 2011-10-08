@@ -5,7 +5,7 @@
 
 var express = require('express'),
     piratenkompass = require('./piratenkompass'),
-    svg = require('./displays/html');
+    displays = {};
 
 var app = module.exports = express.createServer();
 
@@ -30,8 +30,18 @@ app.configure('production', function () {
 
 // Routes
 
-app.get('/', function (req, res) {
-    svg.out(piratenkompass.getKompassdata, res);
+app.get('/:format?/:mod?', function (req, res, next) {
+    if ([undefined, 'svg', 'html'].indexOf(req.params.format) === -1 ||
+        [undefined, 'raw'].indexOf(req.params.mod) === -1) {
+        return next();
+    }
+
+    req.params.format = req.params.format || 'svg';
+
+    if (!displays[req.params.format]) {
+        displays[req.params.format] = require('./displays/' + req.params.format);
+    }
+    displays[req.params.format].out(piratenkompass.getKompassdata, res, req.params.mod === 'raw');
 });
 
 app.listen(3000);

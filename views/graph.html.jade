@@ -1,0 +1,9 @@
+div(style='margin: 0pt; padding: 0pt; position: relative; height: 230px; width: 260px;')
+  img(width="260", height="221", src="/static/political_compass.png")
+  - each r, percent in ranges
+    div.box(style="border-color: #5d8f5b; top: #{r.to.x}px; left: #{r.from.y}px; width: " + (r.to.y - r.from.y) + "px; height: " + (r.from.x - r.to.x) + "px;")
+      &#x200A;
+   - each compass in compasses
+     a(href=compass.url, title=compass.desc)
+       div.dot(style="top:" + compass.coords.x + "px; left: " + compass.coords.y + "px;")
+         &#x200A;
