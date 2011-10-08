@@ -1,18 +1,18 @@
-div(style='margin: 0 auto; width:260px;'),
-  div(style="margin: 0pt; padding: 0pt; position: relative; height: 230px; width: 260px;')
+div(style='margin: 0 auto; width:260px;')
+  div(style='margin: 0pt; padding: 0pt; position: relative; height: 230px; width: 260px;')
     img(width="260", height="221", src="/static/political_compass.png")
-  - each r, percent in ranges
-    div.box(style="border-color: #5d8f5b; top: " + Math.min(r.from.y, r.to.y) + "px; left: " + Math.min(r.from.x, r.to.x) + "px; width: " + Math.abs(r.to.x - r.from.x) + "px; height: " + Math.abs(r.from.y - r.to.y) + "px;")
-      &#x200A;
-   - each compass in compasses
-     a(href=compass.url,
-       title='#{compass.name} – (soc: #{compass.compass.soc}, ec: #{compass.compass.ec})')
-         div.dot(style="top:" + compass.coords.y + "px; left: " + compass.coords.y + "px;")
-           &#x200A;
+    - each r, percent in ranges
+      div.box(style="border-color: #5d8f5b; top: " + Math.min(r.from.x, r.to.x) + "px; left: " + Math.min(r.from.y, r.to.y) + "px; width: " + Math.abs(r.to.y - r.from.y) + "px; height: " + Math.abs(r.from.x - r.to.x) + "px;")
+        &#x200A;
+     - each compass in compasses
+       a(href=compass.url,
+         title='Benutzer:#{compass.name} – (soc: #{compass.compass.soc}, ec: #{compass.compass.ec})')
+           div.dot(style="top:" + compass.coords.x + "px; left: " + compass.coords.y + "px;")
+             &#x200A;
 p Der Durchschnittspunkt ist #{avg.soc}, #{avg.ec}. Die Rahmen zeigen die 90%- bzw. 80%-Bereiche.
 div(style="margin: 0 auto; width:250px;")
   div(style="margin: 0pt; padding: 0pt; position: relative; height: 250px; width: 250px;")
     img(width="250", height="250", src="http://www.politicalcompass.org/images/germany2005.gif")
-      div(title="Der Durchschnitt der Piraten", class="bigdot",
-          style="top:" + (((402-100) / 20 * -avg.soc + 100 + (402-100) / 2) / 2) + "px; left:" + (((390-82) / 20 * avg.ec + 82 + (390-82) / 2) / 2) + "px;")
-        &#x200A;
+    div(title="Der Durchschnitt der Piraten", class="bigdot",
+        style="top:" + (((402-100) / 20 * -avg.soc + 100 + (402-100) / 2) / 2) + "px; left:" + (((390-82) / 20 * avg.ec + 82 + (390-82) / 2) / 2) + "px;")
+      &#x200A;
