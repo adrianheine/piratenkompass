@@ -59,3 +59,7 @@ exports.iterativeParallel = function (taskhandler, ncb_finishhandler, start_stat
 
     start_task(start_state);
 };
+
+exports.numForOutput = function (v) {
+    return Number.prototype.toFixed.call(v, 2);
+};

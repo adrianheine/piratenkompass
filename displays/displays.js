@@ -48,7 +48,7 @@ exports.prepareViewData = function(getCoords, view_data, in_data, ncb_callback) 
             view_data.compasses = users_data.success.map(function (compass) {
                 return {
                     name: compass.name,
-                    compass: compass.compass,
+                    compass: lib.mapValues(compass.compass, lib.numForOutput),
                     url: wiki.getUserPageURL(compass.name),
                     coords: getCoords(compass.compass)
                 };
@@ -65,9 +65,14 @@ exports.prepareViewData = function(getCoords, view_data, in_data, ncb_callback) 
             }, {ec: 0, soc: 0}), function (v) {
                 return v / users_data.success.length;
             });
+
+            // Calculate coords, if requested
             if (view_data.avg_coords === null) {
                 view_data.avg_coords = getCoords(view_data.avg);
             }
+
+            // Round average
+            view_data.avg = lib.mapValues(view_data.avg, lib.numForOutput);
         }
     }
 
