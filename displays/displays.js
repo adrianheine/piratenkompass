@@ -35,10 +35,15 @@ function getRange(data, percent) {
     return ret;
 };
 
+exports.groupData = function (in_data) {
+    return lib.groupBy(in_data, function (compass) {
+        return 'compass' in compass ? 'success' : 'fail';
+    });
+};
+
 exports.prepareViewData = function(getCoords, view_data, in_data, ncb_callback) {
-    var users_data = lib.groupBy(in_data, function (compass) {
-            return 'compass' in compass ? 'success' : 'fail';
-        }), success_compasses;
+    var users_data = lib.groupData(in_data),
+        success_compasses;
 
     if ('success' in users_data) {
         // compass ranges

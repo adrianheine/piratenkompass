@@ -7,22 +7,28 @@ function getCoords(inp) {
             y: 10 * -inp.soc };
 }
 
-function out(getData, res) {
+function out(getData, res, raw) {
+    var data = raw ? {
+        layout: false,
+
+        // map ranges
+        ranges: null,
+        // individual compasses
+        compasses: null,
+        // average
+        avg_coords: null
+    } : {
+        title: 'SVG',
+        avg: null
+    };
     async.waterfall([
         getData,
-        displays.prepareViewData.bind(undefined, getCoords, {
-            layout: false,
-
-            // map ranges
-            ranges: null,
-            // individual compasses
-            compasses: null,
-            // average
-            avg_coords: null
-        })
+        displays.prepareViewData.bind(undefined, getCoords, data)
     ], function (err, params) {
-        res.contentType('svg');
-        res.render('graph.svg.jade', params);
+        if (raw) {
+            res.contentType('svg');
+        }
+        res.render(raw ? 'graph.svg.jade' : 'page-svg.html.jade', params);
     });
 }
 

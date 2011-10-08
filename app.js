@@ -31,7 +31,7 @@ app.configure('production', function () {
 // Routes
 
 app.get('/:format?/:mod?', function (req, res, next) {
-    if ([undefined, 'svg', 'html'].indexOf(req.params.format) === -1 ||
+    if ([undefined, 'svg', 'html', 'csv'].indexOf(req.params.format) === -1 ||
         [undefined, 'raw'].indexOf(req.params.mod) === -1) {
         return next();
     }
