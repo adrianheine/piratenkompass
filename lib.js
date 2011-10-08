@@ -63,3 +63,9 @@ exports.iterativeParallel = function (taskhandler, ncb_finishhandler, start_stat
 exports.numForOutput = function (v) {
     return Number.prototype.toFixed.call(v, 2);
 };
+
+exports.numSort = function (list) {
+    return list.sort(function (a, b) {
+        return a < b ? -1 : (a > b ? 1 : 0);
+    });
+};
