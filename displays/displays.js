@@ -42,7 +42,7 @@ exports.groupData = function (in_data) {
 };
 
 exports.prepareViewData = function(getCoords, view_data, in_data, ncb_callback) {
-    var users_data = lib.groupData(in_data),
+    var users_data = exports.groupData(in_data),
         success_compasses;
 
     if ('success' in users_data) {

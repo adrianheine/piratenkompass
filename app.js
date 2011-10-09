@@ -29,14 +29,31 @@ app.configure('production', function () {
 });
 
 // Routes
-
 app.get('/:format?/:mod?', function (req, res, next) {
+    // Support legacy URLs
+    if (req.query.t) {
+        var map = {
+            display: '/html',
+            big: '/svg',
+            svg: '/svg/raw',
+            raw: '/csv/raw'
+    //        source: 
+        };
+
+        if (map[req.query.t]) {
+            return res.redirect(map[req.query.t], 301); // FIXME correct code
+        }
+    }
+
     if ([undefined, 'svg', 'html', 'csv'].indexOf(req.params.format) === -1 ||
         [undefined, 'raw'].indexOf(req.params.mod) === -1) {
         return next();
     }
 
-    req.params.format = req.params.format || 'svg';
+    if (typeof req.params.format === 'undefined') {
+        // Use SVG version when browser supports it
+        req.params.format = req.accepts('xhtml') ? 'svg' : 'html';
+    }
 
     if (!displays[req.params.format]) {
         displays[req.params.format] = require('./displays/' + req.params.format);
