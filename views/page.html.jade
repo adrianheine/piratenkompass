@@ -4,6 +4,10 @@ p Der Durchschnittspunkt ist #{avg.soc}, #{avg.ec}. Die Rahmen zeigen die 90%- b
 div(style="margin: 0 auto; width:250px;")
   div(style="margin: 0pt; padding: 0pt; position: relative; height: 250px; width: 250px;")
     img(width="250", height="250", src="http://www.politicalcompass.org/images/germany2005.gif")
-    div(title="Der Durchschnitt der Piraten", class="bigdot",
+    div.bigdot(title="Der Durchschnitt der Piraten",
         style="top:" + (((402-100) / 20 * -avg.soc + 100 + (402-100) / 2) / 2) + "px; left:" + (((390-82) / 20 * avg.ec + 82 + (390-82) / 2) / 2) + "px;")
       &#x200A;
+p
+  | Ausgewertet wird die
+  a(href="http://wiki.piratenpartei.de/Kategorie%3ABenutzer_hat_politischen_Kompass", title="„Kategorie:Benutzer hat politischen Kompass“ im Piratenwiki") Kategorie:Benutzer hat politischen Kompass
+  | .
