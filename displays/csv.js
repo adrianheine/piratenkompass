@@ -11,7 +11,7 @@ function out(getData, res, raw) {
             res.contentType('csv');
             res.send(csv);
         } else {
-            res.render('page-csv.html.jade', {csv: csv, title: 'CSV', protocol: 'http'});
+            res.render('page-csv', {csv: csv, title: 'CSV', protocol: 'http'});
         }
     });
 }

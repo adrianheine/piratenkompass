@@ -27,7 +27,7 @@ function out(getData, res, raw) {
         getData,
         displays.prepareViewData.bind(undefined, getCoords, data)
     ], function (err, params) {
-        res.render((raw ? 'graph-wrapper' : 'page') + '.html.jade', params);
+        res.render(raw ? 'graph-wrapper.html.jade' : 'page-html', params);
     });
 }
 

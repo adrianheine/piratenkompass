@@ -28,7 +28,7 @@ function out(getData, res, raw) {
         if (raw) {
             res.contentType('svg');
         }
-        res.render(raw ? 'graph.svg.jade' : 'page-svg.html.jade', params);
+        res.render(raw ? 'graph.svg.jade' : 'page-svg', params);
     });
 }
 
