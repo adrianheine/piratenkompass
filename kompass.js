@@ -38,7 +38,7 @@ function is_blacklisted(user) {
 }
 
 function get_kompass(kompass_getter, user, ncb_kompasshandler) {
-    var cur_kompass_getter = -1;
+    var cur_kompass_getter = -1, errs = [];
 
     // For single getter
     if (typeof kompass_getter === 'function') {
@@ -48,16 +48,24 @@ function get_kompass(kompass_getter, user, ncb_kompasshandler) {
     // Prepend default getter
     kompass_getter = [get_static_kompass].concat(kompass_getter);
 
-    function try_kompass_getter(err, res) {
-        if (res) {
-            return ncb_kompasshandler(null, res);
-        }
+    // FIXME Pattern? Async?
+    function try_kompass_getter() {
         cur_kompass_getter += 1;
-        if (!kompass_getter[cur_kompass_getter]) {
-            console.warn('Failed to get compass data for ' + user);
+        if (kompass_getter.length <= cur_kompass_getter) {
+            console.warn('Failed to get compass data for ' + user + ' (' + errs.map(function (v) { return '"' + v + '"'; }).join(',') + ')');
             return ncb_kompasshandler('Failed to get compass data for ' + user);
         }
-        kompass_getter[cur_kompass_getter](user, try_kompass_getter);
+        kompass_getter[cur_kompass_getter](user, kompass_getter.push.bind(kompass_getter),
+                                           function (err, res) {
+            if (res) {
+                ncb_kompasshandler(null, res);
+            } else {
+                if (err) {
+                    errs.push(err);
+                }
+                try_kompass_getter();
+            }
+        });
     }
 
     try_kompass_getter();
@@ -66,7 +74,7 @@ function get_kompass(kompass_getter, user, ncb_kompasshandler) {
 /**
  * Default callback for static lookup
  */
-function get_static_kompass(u, ncb_callback) {
+function get_static_kompass(u, addGetter, ncb_callback) {
     ncb_callback(null, static_kompass[u] || null);
 }
 
