@@ -71,7 +71,7 @@ function get_static_kompass(u, ncb_callback) {
 }
 
 function parse_page(page, ncb_callback) {
-    var ret = {};
+    var ret = {}, match;
     while( match = parse_regex.exec(page)) {
         ret[match[1].toLowerCase()] = parseFloat(match[2].replace(' ', ''));
     }
