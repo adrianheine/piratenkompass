@@ -8,7 +8,8 @@ var http = require('http'),
     exports = module.exports = {},
     wiki = exports;
 
-function getRes(path, ncb) {
+// FIXME: limit retrying … abstract pattern?
+exports.getRes = function(path, ncb) {
     http.get({host: host,
               headers: {Connection: 'keep-alive'},
               path: path},
@@ -20,7 +21,7 @@ function getRes(path, ncb) {
          .on('error',
              function (e) {
                  console.log("Got error: " + e.message);
-                 setTimeout(getRes.bind(undefined, path, ncb), 1000);
+                 setTimeout(wiki.getRes.bind(undefined, path, ncb), 1000);
              });
 }
 
@@ -33,7 +34,7 @@ exports.getCatMembers = function (cb_datahandler, ncb_finishhandler) {
                           + '&cmcontinue=';
 
     lib.iterativeParallel(function (state, add_task, ncb_register_done) {
-        getRes(path + encodeURIComponent(state), function (err, data) {
+        wiki.getRes(path + encodeURIComponent(state), function (err, data) {
             var content = JSON.parse(data);
 
             if (content['query-continue']) {

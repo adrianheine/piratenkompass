@@ -3,13 +3,21 @@ var fs = require('fs'),
 
 var exports = module.exports = require('./wiki');
 
-exports.getPage = function (page, ncb) {
-    fs.readFile('/home/adrian/piratenkompass/cache/' +
-                encodeURIComponent(page.replace(/^Benutzer:/, '')
-                          .replace(/(\.)|(\.\.)|(\/)|(:)/g, '__')).replace(/%20/g, '+'),
-                function(err, file) {
-                    ncb(null, (file || '').toString());
-                });
+exports.getRes = function (path, ncb) {
+    var match;
+    if (match = path.match(/^\/Benutzer%3A(.*)\?action=raw/)) {
+        fs.readFile('/home/adrian/piratenkompass/cache/' +
+                    encodeURIComponent(decodeURIComponent(match[1])
+                                       .replace(/(\.)|(\.\.)|(\/)|(:)/g, '__')).replace(/%20/g, '+'),
+                    function(err, file) {
+                        if (file) {
+                            file = file.toString();
+                        }
+                        ncb(err, file);
+                    });
+    } else {
+        ncb('Wiki resource ' + path + ' is not available in wiki_mock');
+    }
 }
 
 exports.getCatMembers = function (cb_datahandler, ncb_finishhandler) {
