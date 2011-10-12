@@ -1,4 +1,5 @@
 var exports = module.exports = require('./underscore/underscore-min.js'),
+    async = require('async'),
     lib = exports;
 
 exports.mapValues = function (inp, mapper) {
@@ -67,5 +68,33 @@ exports.numForOutput = function (v) {
 exports.numSort = function (list) {
     return list.sort(function (a, b) {
         return a < b ? -1 : (a > b ? 1 : 0);
+    });
+};
+
+/**
+ * An asynchronous forEach stopping after the first iterator call yielding a
+ * result. Returns the result of the iterator (as res) or an array containing
+ * all errors received (as err), if no iterator yielded a value.
+ */
+exports.untilValue = function (arr, iterator, ncb_callback) {
+    var errs = [];
+    return async.forEachSeries(arr, function (item, callback) {
+        iterator(item, function (err, res) {
+            if (res) {
+                // Trigger series aborting
+                callback(res);
+            } else {
+                if (err) {
+                    errs.push(err);
+                }
+                callback();
+            }
+        });
+    }, function (res) {
+        if (res) {
+            ncb_callback(null, res);
+        } else {
+            ncb_callback(errs);
+        }
     });
 };
