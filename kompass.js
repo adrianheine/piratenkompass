@@ -60,8 +60,12 @@ function get_kompass(kompass_getters, user, ncb_kompasshandler) {
 /**
  * Default callback for static lookup
  */
-function get_static_kompass(u, addGetter, ncb_callback) {
-    ncb_callback(null, static_kompass[u] || null);
+function get_static_kompass(u, ncb_callback) {
+    if (static_kompass[u]) {
+        ncb_callback(null, static_kompass[u]);
+    } else {
+        ncb_callback('No static compass data available for ' + u);
+    }
 }
 
 function parse_page(page, ncb_callback) {
