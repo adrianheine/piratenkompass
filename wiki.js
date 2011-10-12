@@ -42,6 +42,9 @@ exports.getCatMembers = function (cb_datahandler, ncb_finishhandler) {
 
     lib.iterativeParallel(function (state, add_task, ncb_register_done) {
         wiki.getRes(path + encodeURIComponent(state), function (err, data) {
+            if (err) {
+                return ncb_finishhandler('Cannot get category members for ›' + category + '‹.');
+            }
             var content = JSON.parse(data);
 
             if (content['query-continue']) {
@@ -55,7 +58,7 @@ exports.getCatMembers = function (cb_datahandler, ncb_finishhandler) {
     }, '');
 }
 
-exports.getPage = function (page, ncb) {
+exports.getPage = function (page, ncb_pagehandler) {
     async.waterfall([
         wiki.getRes.bind(undefined, '/' + encodeURIComponent(page) + '?action=raw'),
         // Resolve redirects
@@ -67,7 +70,7 @@ exports.getPage = function (page, ncb) {
                 ncb_downstream(null, page_content);
             }
         }
-    ], ncb);
+    ], ncb_pagehandler);
 }
 
 function getUsersInCat(cb_datahandler, ncb_finishhandler) {
