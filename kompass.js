@@ -38,20 +38,16 @@ function is_blacklisted(user) {
 }
 
 function get_kompass(kompass_getters, user, ncb_kompasshandler) {
-    var add_getter;
-
     // For single getter
     if (typeof kompass_getters === 'function') {
         kompass_getters = [kompass_getters];
     }
 
     // Prepend default getter
-    kompass_getters = [get_static_kompass].concat(kompass_getters);
-
-    add_getter = kompass_getters.push.bind(kompass_getters);
+    kompass_getters.unshift(get_static_kompass);
 
     lib.untilValue(kompass_getters, function (getter, callback) {
-        getter(user, add_getter, callback);
+        getter(user, callback);
     }, function (errs, res) {
         if (errs) {
             console.warn('Failed to get compass data for ' + user + ' (' + errs.map(function (v) { return '"' + v + '"'; }).join(',') + ')');
