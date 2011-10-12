@@ -10,22 +10,27 @@ var http = require('http'),
     tpl_ns = 'Vorlage:',
     wiki = exports;
 
-// FIXME: limit retrying … abstract pattern?
-exports.getRes = function(path, ncb) {
-    http.get({host: host,
-              headers: {Connection: 'keep-alive'},
-              path: path},
-             function (res) {
-                 var data = '';
-                 res.on('data', function (chunk) { data += chunk; })
-                    .on('end', function () { ncb(null, data); });
-             })
-         .on('error',
-             function (e) {
-                 console.log("Got error: " + e.message);
-                 setTimeout(wiki.getRes.bind(undefined, path, ncb), 1000);
-             });
-}
+exports.getRes = function(path, ncb_reshandler) {
+    lib.retry(function (ncb_callback) {
+        http.get({host: host, headers: {Connection: 'keep-alive'},
+                  path: path}, function (res) {
+            var data = '';
+            res.on('data', function (chunk) {
+                data += chunk;
+            }).on('end', function () {
+                ncb_callback(null, data);
+            });
+        }).on('error', function (e) {
+            console.warn("Got error: " + e.message);
+            ncb_callback(e.message);
+        });
+    }, function (err, res) {
+        if (err) {
+            err = 'Cannot load wiki resource ' + path + ', got error ' + err;
+        }
+        ncb_reshandler(err, res);
+    });
+};
 
 exports.getCatMembers = function (cb_datahandler, ncb_finishhandler) {
     var path = '/wiki/api.php?action=query'

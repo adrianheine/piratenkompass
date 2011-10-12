@@ -98,3 +98,31 @@ exports.untilValue = function (arr, iterator, ncb_callback) {
         }
     });
 };
+
+exports.retry = function (fn, delay, retries, ncb_callback) {
+    var last_err = null;
+
+    ncb_callback = arguments[arguments.length - 1];
+    if (typeof delay !== 'number') {
+        delay = 1000;
+    }
+    if (typeof retries !== 'number') {
+        retries = 5;
+    }
+
+    async.whilst(function () {
+        return retries-- > 0;
+    }, function (callback) {
+        fn(function (err, res) {
+            if (err) {
+                last_err = err;
+                setTimeout(callback, delay);
+            } else {
+                ncb_callback(null, res);
+            }
+        });
+    }, function () {
+        ncb_callback(last_err || 'Maximum number of retries reached');
+    });
+
+};
