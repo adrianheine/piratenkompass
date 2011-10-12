@@ -6,15 +6,17 @@ var exports = module.exports = require('./wiki');
 exports.getRes = function (path, ncb) {
     var match;
     if (match = path.match(/^\/Benutzer%3A(.*)\?action=raw/)) {
-        fs.readFile('/home/adrian/piratenkompass/cache/' +
-                    encodeURIComponent(decodeURIComponent(match[1])
-                                       .replace(/(\.)|(\.\.)|(\/)|(:)/g, '__')).replace(/%20/g, '+'),
-                    function(err, file) {
-                        if (file) {
-                            file = file.toString();
-                        }
-                        ncb(err, file);
-                    });
+        lib.retry(function (ncb_callback) {
+            fs.readFile('/home/adrian/piratenkompass/cache/' +
+                        encodeURIComponent(decodeURIComponent(match[1])
+                                           .replace(/(\.)|(\.\.)|(\/)|(:)/g, '__')).replace(/%20/g, '+'),
+                        function(err, file) {
+                if (file) {
+                    file = file.toString();
+                }
+                ncb_callback(err, file);
+            });
+        }, 2, 10, ncb);
     } else {
         ncb('Wiki resource ' + path + ' is not available in wiki_mock');
     }
