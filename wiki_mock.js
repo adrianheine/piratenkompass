@@ -1014,8 +1014,5 @@ exports.getCatMembers = function (cb_datahandler, ncb_finishhandler) {
         }
 
         cb_datahandler(cat[state], ncb_register_done);
-    }, function (err, res) {
-        return ncb_finishhandler(err, lib.flattenOnce(res));
-    }, 0);
-
+    }, ncb_finishhandler, 0);
 };

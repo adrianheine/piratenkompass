@@ -53,9 +53,7 @@ exports.getCatMembers = function (cb_datahandler, ncb_finishhandler) {
 
             cb_datahandler(content.query.categorymembers, ncb_register_done);
         });
-    }, function (err, res) {
-        return ncb_finishhandler(err, lib.flattenOnce(res));
-    }, '');
+    }, ncb_finishhandler, '');
 }
 
 exports.getPage = function (page, ncb_pagehandler) {

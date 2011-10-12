@@ -46,7 +46,15 @@ function getKompassdata(ncb_callback) {
                 ncb_callback(null, ret);
             });
         }, ncb_register_done);
-    }, ncb_callback);
+    }, function (err, res) {
+        if (res) {
+            // res is an array of arrays of objects
+            res = lib.uniq(lib.flatten(res), false, function (v) {
+                return v.name;
+            });
+        }
+        ncb_callback(err, res);
+    });
 }
 
 exports.getKompassdata = getKompassdata;
