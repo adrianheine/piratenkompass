@@ -9,10 +9,8 @@ function getRange(data, percent) {
         sorted_datas, ret;
 
     if ((high - low / data.length) < percent / 100) {
-        // FIXME correct round?
         console.err('Too small window – ' + percent + ' wanted, ' +
-                    Math.round((high - low / data.length) * 100) / 100 +
-                    ' given');
+                    lib.numForOutput(high - low / data.length) + ' given');
     }
     high -= 1;
 
@@ -98,7 +96,6 @@ exports.prepareViewData = function(getCoords, view_data, in_data, ncb_callback) 
         }
     }
 
-    // FIXME
     view_data.protocol = 'http';
 
     ncb_callback(null, view_data);
