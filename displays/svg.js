@@ -25,6 +25,9 @@ function out(getData, res, raw) {
         getData,
         displays.prepareViewData.bind(undefined, getCoords, data)
     ], function (err, params) {
+        if (err) {
+            return displays.errHandler(err, res);
+        }
         if (raw) {
             res.contentType('svg');
         }

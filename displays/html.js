@@ -27,6 +27,9 @@ function out(getData, res, raw) {
         getData,
         displays.prepareViewData.bind(undefined, getCoords, data)
     ], function (err, params) {
+        if (err) {
+            return displays.errHandler(err, res);
+        }
         res.render(raw ? 'graph-wrapper.html.jade' : 'page-html', params);
     });
 }

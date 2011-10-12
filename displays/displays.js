@@ -100,3 +100,7 @@ exports.prepareViewData = function(getCoords, view_data, in_data, ncb_callback) 
 
     ncb_callback(null, view_data);
 };
+
+exports.errHandler = function (err, res) {
+    return res.render('error', {title: 'Error', err: err, protocol: 'http'});
+}
