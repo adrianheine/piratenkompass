@@ -5,9 +5,9 @@ var wiki = require('./wiki_mock'),
 
 getUsers = lib.cached(function (ncb_callback) {
     wiki.getUsersInCat(function (users, ncb_register_done) {
-        users = users.filter(lib.o(lib.not, kompass.is_blacklisted));
+        users = users.filter(lib.compose(lib.not, kompass.is_blacklisted));
         ncb_register_done(null, users);
-    }, lib.ncb_withRes(lib.o(lib.uniq, lib.flatten), ncb_callback));
+    }, lib.ncb_withRes(lib.compose(lib.uniq, lib.flatten), ncb_callback));
 }, '1d'),
 
 getCompass = function (user, ncb_callback) {

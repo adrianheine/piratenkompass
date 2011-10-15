@@ -14,12 +14,6 @@ exports.flattenOnce = function (inp) {
     return _ret.concat.apply(_ret, inp);
 };
 
-function o(a, b) {
-    return function () {
-        return a(b.apply(this, arguments));
-    };
-}
-
 function not(a) {
     return !a;
 }
