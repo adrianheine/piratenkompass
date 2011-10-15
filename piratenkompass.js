@@ -10,6 +10,17 @@ getUsers = lib.cached(function (ncb_callback) {
     }, lib.ncb_withRes(lib.compose(lib.uniq, lib.flatten), ncb_callback));
 }, '1d'),
 
+userPageGetter = (function () {
+    var getters = [];
+    return function (user) {
+        if (!getters[user]) {
+            getters[user] = lib.cached(wiki.getUserPage.bind(undefined, user),
+                                       '10m');
+        }
+        return getters[user];
+    };
+}());
+
 getCompass = function (user, ncb_callback) {
     if (!getCompass.getters[user]) {
         getCompass.getters[user] = lib.cached(function (ncb_callback) {
@@ -18,14 +29,14 @@ getCompass = function (user, ncb_callback) {
                 // Parse user page for compass data
                 function (user, ncb_callback) {
                     async.waterfall([
-                        wiki.getUserPage.bind(undefined, user),
+                        userPageGetter(user),
                         kompass.parse_page
                     ], ncb_callback);
                 },
                 // Parse included pages
                 function (user, ncb_callback) {
                     async.waterfall([
-                        wiki.getUserPage.bind(undefined, user),
+                        userPageGetter(user),
                         function (page, ncb_callback) {
                             wiki.getIncludedPageNames(page).forEach(function (v) {
                                 getters.push(function (user, ncb_callback) {
