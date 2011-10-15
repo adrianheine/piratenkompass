@@ -14,7 +14,7 @@ exports.flattenOnce = function (inp) {
     return _ret.concat.apply(_ret, inp);
 };
 
-function not(a) {
+exports.not = function(a) {
     return !a;
 }
 
@@ -26,9 +26,6 @@ function firstHandler(handlers, test_func) {
     });
     return res;
 }
-
-exports.o = o;
-exports.not = not;
 
 exports.ncb_withRes = function (cb_reshandler, ncb_continue) {
     return function (err, res) {
@@ -152,7 +149,7 @@ exports.simpleTime = function (str) {
         return str;
     }
     match = str.match(/^(-?[\d.]+)(\w)?$/);
-    val = parseFloat(match[1], 10);
+    val = parseFloat(match[1]);
     if (match[2]) {
         exports.some(mapping, function (v) {
             val *= v.amount;

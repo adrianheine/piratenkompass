@@ -26,7 +26,7 @@ exports.getRes = function(path, ncb_reshandler) {
         });
     }, lib.ncb_withErr(function (err) {
         return  'Cannot load wiki resource ' + path + ', got error ' + err;
-    } ncb_res));
+    }, ncb_res));
 };
 
 exports.getCatMembers = function (cb_datahandler, ncb_finishhandler) {
