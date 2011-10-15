@@ -1,14 +1,19 @@
 var wiki = require('./wiki_mock'),
     kompass = require('./kompass'),
     lib = require('./lib'),
-    async = require('async');
+    async = require('async'),
 
-function getKompassdata(ncb_callback) {
+getUsers = lib.cached(function (ncb_callback) {
     wiki.getUsersInCat(function (users, ncb_register_done) {
         users = users.filter(lib.o(lib.not, kompass.is_blacklisted));
+        ncb_register_done(null, users);
+    }, lib.ncb_withRes(lib.o(lib.uniq, lib.flatten), ncb_callback));
+}, '1d'),
 
-        // Retrieve compasses for users
-        async.map(users, function (item, ncb_callback) {
+getCompass = function (user, ncb_callback) {
+    if (!getCompass.getters[user]) {
+        getCompass.getters[user] = lib.cached(function (ncb_callback) {
+            // Retrieve compass for user
             var getters = [
                 // Parse user page for compass data
                 function (user, ncb_callback) {
@@ -36,8 +41,8 @@ function getKompassdata(ncb_callback) {
                 }
             ];
 
-            kompass.get_kompass(getters, item, function (err, val) {
-                var ret = {name: item};
+            kompass.get_kompass(getters, user, function (err, val) {
+                var ret = {name: user};
                 if (err) {
                     ret.error = true;
                 } else {
@@ -45,16 +50,18 @@ function getKompassdata(ncb_callback) {
                 }
                 ncb_callback(null, ret);
             });
-        }, ncb_register_done);
-    }, function (err, res) {
-        if (res) {
-            // res is an array of arrays of objects
-            res = lib.uniq(lib.flatten(res), false, function (v) {
-                return v.name;
-            });
-        }
-        ncb_callback(err, res);
-    });
-}
+        }, (5 + Math.random() * 5).toString() +  'd');
+    }
+    getCompass.getters[user](ncb_callback);
+};
 
-exports.getKompassdata = getKompassdata;
+getCompass.getters = {};
+
+exports.getKompassdata = lib.cached(function (ncb_datahandler) {
+    async.waterfall([
+        getUsers,
+        function (users, ncb_callback) {
+            async.map(users, getCompass, ncb_callback);
+        }
+    ], ncb_datahandler);
+});

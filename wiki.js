@@ -24,12 +24,9 @@ exports.getRes = function(path, ncb_reshandler) {
             console.warn("Got error: " + e.message);
             ncb_callback(e.message);
         });
-    }, function (err, res) {
-        if (err) {
-            err = 'Cannot load wiki resource ' + path + ', got error ' + err;
-        }
-        ncb_reshandler(err, res);
-    });
+    }, lib.ncb_withErr(function (err) {
+        return  'Cannot load wiki resource ' + path + ', got error ' + err;
+    } ncb_res));
 };
 
 exports.getCatMembers = function (cb_datahandler, ncb_finishhandler) {

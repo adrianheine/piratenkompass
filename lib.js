@@ -36,6 +36,24 @@ function firstHandler(handlers, test_func) {
 exports.o = o;
 exports.not = not;
 
+exports.ncb_withRes = function (cb_reshandler, ncb_continue) {
+    return function (err, res) {
+        if (typeof res !== 'undefined') {
+            res = cb_reshandler(res);
+        }
+        ncb_continue(err, res);
+    };
+};
+
+exports.ncb_withErr = function (cb_errhandler, ncb_continue) {
+    return function (err, res) {
+        if (typeof err === 'undefined' || err === null) {
+            err = cb_errhandler(err);
+        }
+        ncb_continue(err, res);
+    };
+};
+
 exports.iterativeParallel = function (taskhandler, ncb_finishhandler, start_state) {
     var expect = [], overall_res = [];
 
@@ -125,4 +143,51 @@ exports.retry = function (fn, delay, retries, ncb_callback) {
         ncb_callback(last_err || 'Maximum number of retries reached');
     });
 
+};
+
+exports.simpleTime = function (str) {
+    var val, match,
+        mapping = [
+            {unit: 's', amount:  1},
+            {unit: 'm', amount: 60},
+            {unit: 'h', amount: 60},
+            {unit: 'd', amount: 24},
+            {unit: 'w', amount:  7}
+        ];
+    if (typeof str === 'number') {
+        return str;
+    }
+    match = str.match(/^(-?[\d.]+)(\w)?$/);
+    val = parseFloat(match[1], 10);
+    if (match[2]) {
+        exports.some(mapping, function (v) {
+            val *= v.amount;
+            if (v.unit === match[2]) {
+                return true;
+            }
+        });
+    }
+    return val;
+}
+
+exports.cached = function (val_producer, expiry) {
+    var value = null,
+        valid_until = null;
+
+    if (typeof expiry === 'undefined') {
+        expiry = '1d';
+    }
+    expiry = exports.simpleTime(expiry);
+
+    return function (ncb_val_handler) {
+        if (valid_until === null || valid_until < Date.now()) {
+            val_producer(exports.ncb_withRes(function (res) {
+                value = res;
+                valid_until = Date.now() + expiry;
+                return res;
+            }, ncb_val_handler));
+        } else {
+            ncb_val_handler(null, value);
+        }
+    };
 };
