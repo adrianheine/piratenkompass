@@ -1,20 +1,24 @@
 var displays = require('./displays');
 
 function out(getData, res, raw) {
-    getData(function (err, data) {
+    getData(function (err, in_data) {
         if (err) {
             return displays.errHandler(err, res);
         }
         var csv = 'User,Socially,Economically\n';
-        data = displays.groupData(data).success || [];
-        csv += data.map(function (entry) {
+        csv += (displays.groupData(in_data).success || []).map(function (entry) {
             return '"' + [entry.name, entry.compass.soc, entry.compass.ec].join('","') + '"';
         }).join('\n');
         if (raw) {
             res.contentType('csv');
             res.send(csv);
         } else {
-            res.render('page-csv', {csv: csv, title: 'CSV', protocol: 'http'});
+            displays.prepareViewData({
+                csv: csv,
+                title: 'CSV'
+            }, in_data, function (err, view_data) {
+                res.render('page-csv', view_data);
+            })
         }
     });
 }

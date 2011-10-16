@@ -9,6 +9,8 @@ function getCoords(inp) {
 
 function out(getData, res, raw) {
     var data = raw ? {
+        getCoords: getCoords,
+
         layout: false,
 
         // map ranges
@@ -18,12 +20,13 @@ function out(getData, res, raw) {
         // average
         avg_coords: null
     } : {
+        getCoords: getCoords,
+
         title: 'SVG',
-        avg: null
     };
     async.waterfall([
         getData,
-        displays.prepareViewData.bind(undefined, getCoords, data)
+        displays.prepareViewData.bind(undefined, data)
     ], function (err, params) {
         if (err) {
             return displays.errHandler(err, res);

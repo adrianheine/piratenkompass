@@ -39,61 +39,70 @@ exports.groupData = function (in_data) {
     });
 };
 
-exports.prepareViewData = function(getCoords, view_data, in_data, ncb_callback) {
-    var users_data = exports.groupData(in_data),
+exports.prepareViewData = function(view_data, in_data, ncb_callback) {
+    var users_data = lib.extend({success: [], fail: []},
+                                exports.groupData(in_data)),
         success_compasses;
 
-    if ('success' in users_data) {
-        // compass ranges
-        if (view_data.ranges === null) {
-            success_compasses = lib.pluck(users_data.success, 'compass');
-            view_data.ranges = lib.mapValues({80: null, 90: null}, function (_, range) {
-                return lib.mapValues(getRange(success_compasses, range),
-                                     getCoords);
-            });
+    if (view_data.layout !== false) {
+        // Add data needed by layout.jade
+        view_data = lib.extend(view_data, {
+            avg: null,
+            err_users: null,
+            count: null
+        });
+    }
+
+    // compass ranges
+    if (view_data.ranges === null) {
+        success_compasses = lib.pluck(users_data.success, 'compass');
+        view_data.ranges = lib.mapValues({80: null, 90: null}, function (_, range) {
+            return lib.mapValues(getRange(success_compasses, range),
+                                 view_data.getCoords);
+        });
+    }
+
+    // individual compasses
+    if (view_data.compasses === null) {
+        view_data.compasses = users_data.success.map(function (entry) {
+            return {
+                url: wiki.getUserPageURL(entry.name),
+                coords: view_data.getCoords(entry.compass),
+                desc: 'Benutzer:' + entry.name + ' – (' +
+                      'soc: ' + lib.numForOutput(entry.compass.soc) + ', ' +
+                      'ec: ' + lib.numForOutput(entry.compass.ec)
+            };
+        });
+    }
+
+    // average
+    if (view_data.avg === null || view_data.avg_coords === null) {
+        view_data.avg = lib.mapValues(lib.reduce(users_data.success,
+                                                           function (sums, compass) {
+            sums.ec += compass.compass.ec;
+            sums.soc += compass.compass.soc;
+            return sums;
+        }, {ec: 0, soc: 0}), function (v) {
+            return v / users_data.success.length;
+        });
+
+        // Calculate coords, if requested
+        if (view_data.avg_coords === null) {
+            view_data.avg_coords = view_data.getCoords(view_data.avg);
         }
 
-        // individual compasses
-        if (view_data.compasses === null) {
-            view_data.compasses = users_data.success.map(function (entry) {
-                return {
-                    url: wiki.getUserPageURL(entry.name),
-                    coords: getCoords(entry.compass),
-                    desc: 'Benutzer:' + entry.name + ' – (' +
-                          'soc: ' + lib.numForOutput(entry.compass.soc) + ', ' +
-                          'ec: ' + lib.numForOutput(entry.compass.ec)
-                };
-            });
-        }
+        // Round average
+        view_data.avg = lib.mapValues(view_data.avg, lib.numForOutput);
+    }
 
-        // average
-        if (view_data.avg === null || view_data.avg_coords === null) {
-            view_data.avg = lib.mapValues(lib.reduce(users_data.success,
-                                                               function (sums, compass) {
-                sums.ec += compass.compass.ec;
-                sums.soc += compass.compass.soc;
-                return sums;
-            }, {ec: 0, soc: 0}), function (v) {
-                return v / users_data.success.length;
-            });
-
-            // Calculate coords, if requested
-            if (view_data.avg_coords === null) {
-                view_data.avg_coords = getCoords(view_data.avg);
-            }
-
-            // Round average
-            view_data.avg = lib.mapValues(view_data.avg, lib.numForOutput);
-        }
+    // Count of compasses
+    if (view_data.count === null) {
+        view_data.count = users_data.success.length;
     }
 
     // error users
-    if (view_data.err_users) {
-        if ('fail' in users_data) {
-            view_data.err_users = lib.pluck(users_data.fail, 'name');
-        } else {
-            view_data.err_users = [];
-        }
+    if (view_data.err_users === null) {
+        view_data.err_users = lib.pluck(users_data.fail, 'name');
     }
 
     view_data.protocol = 'http';

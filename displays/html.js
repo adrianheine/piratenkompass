@@ -9,6 +9,8 @@ function getCoords(inp) {
 
 function out(getData, res, raw) {
     var data = raw ? {
+        getCoords: getCoords,
+
         title: 'HTML + CSS + PNG',
 
         layout: false,
@@ -16,16 +18,16 @@ function out(getData, res, raw) {
         ranges: null,
         compasses: null
     }: {
+        getCoords: getCoords,
         title: 'HTML + CSS + PNG',
 
         ranges: null,
         compasses: null,
         avg: null,
-        err_users: null
     };
     async.waterfall([
         getData,
-        displays.prepareViewData.bind(undefined, getCoords, data)
+        displays.prepareViewData.bind(undefined, data)
     ], function (err, params) {
         if (err) {
             return displays.errHandler(err, res);
