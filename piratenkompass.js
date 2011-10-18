@@ -60,11 +60,16 @@ getCompass = (function () {
                 var getters = [
                     // Check static compass data
                     function (u, ncb_callback) {
-                        if (static_kompass[u]) {
-                            ncb_callback(null, static_kompass[u]);
-                        } else {
-                            ncb_callback('No static compass data available for ' + u);
+                        var compass = static_kompass[u];
+                        if (!compass) {
+                            return ncb_callback('No static compass data available');
                         }
+                        try {
+                            compass = new kompass.Compass(compass.ec, compass.soc);
+                        } catch (e) {
+                            return ncb_callback(e);
+                        }
+                        ncb_callback(null, compass));
                     },
 
                     // Parse user page for compass data

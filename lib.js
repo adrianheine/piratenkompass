@@ -38,7 +38,7 @@ exports.ncb_withRes = function (cb_reshandler, ncb_continue) {
 
 exports.ncb_withErr = function (cb_errhandler, ncb_continue) {
     return function (err, res) {
-        if (typeof err === 'undefined' || err === null) {
+        if (typeof err !== 'undefined' && err !== null) {
             err = cb_errhandler(err);
         }
         ncb_continue(err, res);

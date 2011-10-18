@@ -68,9 +68,7 @@ exports.prepareViewData = function(view_data, in_data, ncb_callback) {
             return {
                 url: wiki.getUserPageURL(entry.name),
                 coords: view_data.getCoords(entry.compass),
-                desc: 'Benutzer:' + entry.name + ' – (' +
-                      'soc: ' + lib.numForOutput(entry.compass.soc) + ', ' +
-                      'ec: ' + lib.numForOutput(entry.compass.ec)
+                desc: 'Benutzer:' + entry.name + ' – ' + entry.compass.toString()
             };
         });
     }
