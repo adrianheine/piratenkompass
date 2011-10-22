@@ -1,3 +1,5 @@
+"use strict";
+
 var displays = require('./displays');
 
 function out(getData, res, raw) {
@@ -18,7 +20,7 @@ function out(getData, res, raw) {
                 title: 'CSV'
             }, in_data, function (err, view_data) {
                 res.render('page-csv', view_data);
-            })
+            });
         }
     });
 }

@@ -1,3 +1,6 @@
+/*jslint white:true*/
+"use strict";
+
 var wiki = require('./wiki_mock'),
     kompass = require('./kompass'),
     lib = require('./lib'),
@@ -69,7 +72,7 @@ getCompass = (function () {
                         } catch (e) {
                             return ncb_callback(e);
                         }
-                        ncb_callback(null, compass));
+                        ncb_callback(null, compass);
                     },
 
                     // Parse user page for compass data

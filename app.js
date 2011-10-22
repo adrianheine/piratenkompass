@@ -1,3 +1,4 @@
+"use strict";
 
 /**
  * Module dependencies.
@@ -17,7 +18,7 @@ app.configure(function () {
 //    app.use(express.bodyParser());
 //    app.use(express.methodOverride());
     app.use(app.router);
-    app.use('/static', express.static(__dirname + '/static'));
+    app.use('/static', express['static'](__dirname + '/static'));
 });
 
 app.configure('development', function () {

@@ -10,7 +10,7 @@ var http = require('http'),
     tpl_ns = 'Vorlage:',
     wiki = exports;
 
-exports.getRes = function(path, ncb_reshandler) {
+exports.getRes = function (path, ncb_reshandler) {
     lib.retry(function (ncb_callback) {
         http.get({host: host, headers: {Connection: 'keep-alive'},
                   path: path}, function (res) {
@@ -25,8 +25,8 @@ exports.getRes = function(path, ncb_reshandler) {
             ncb_callback(e.message);
         });
     }, lib.ncb_withErr(function (err) {
-        return  'Cannot load wiki resource ' + path + ', got error ' + err;
-    }, ncb_res));
+        return 'Cannot load wiki resource ' + path + ', got error ' + err;
+    }, ncb_reshandler));
 };
 
 exports.getCatMembers = function (cb_datahandler, ncb_finishhandler) {
@@ -51,7 +51,7 @@ exports.getCatMembers = function (cb_datahandler, ncb_finishhandler) {
             cb_datahandler(content.query.categorymembers, ncb_register_done);
         });
     }, ncb_finishhandler, '');
-}
+};
 
 exports.getPage = function (page, ncb_pagehandler) {
     async.waterfall([
@@ -66,7 +66,7 @@ exports.getPage = function (page, ncb_pagehandler) {
             }
         }
     ], ncb_pagehandler);
-}
+};
 
 function getUsersInCat(cb_datahandler, ncb_finishhandler) {
     wiki.getCatMembers(function (members, ncb_register_done) {
@@ -92,7 +92,7 @@ exports.getUserPage = function (user, ncb) {
 };
 
 exports.getIncludedPageNames = function (page) {
-    var res = [], include_regexp = /{{([^}|]+)(|[^}]*)?}}/g, match;
+    var res = [], include_regexp = /\{\{([^}|]+)(|[^}]*)?\}\}/g, match;
     while (match = include_regexp.exec(page)) {
         switch (match[1].indexOf(':')) {
         case -1:

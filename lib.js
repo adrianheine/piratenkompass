@@ -1,12 +1,20 @@
+"use strict";
+
 var exports = module.exports = require('./underscore/underscore-min.js'),
     async = require('async'),
     lib = exports;
 
+exports.fn_ = function (method) {
+    return function (obj) {
+        obj[method]();
+    };
+};
+
 exports.mapValues = function (inp, mapper) {
     return exports.reduce(inp, function (obj, v, k) {
-            obj[k] = mapper(v, k);
-            return obj;
-        }, {});
+        obj[k] = mapper(v, k);
+        return obj;
+    }, {});
 };
 
 exports.flattenOnce = function (inp) {
@@ -14,9 +22,9 @@ exports.flattenOnce = function (inp) {
     return _ret.concat.apply(_ret, inp);
 };
 
-exports.not = function(a) {
+exports.not = function (a) {
     return !a;
-}
+};
 
 function firstHandler(handlers, test_func) {
     var res = null;
@@ -159,7 +167,7 @@ exports.simpleTime = function (str) {
         });
     }
     return val;
-}
+};
 
 exports.cached = function (val_producer, expiry) {
     var value = null,

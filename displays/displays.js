@@ -1,3 +1,5 @@
+"use strict";
+
 var lib = require('../lib.js'),
     wiki = require('../wiki'),
     assert = require('assert');
@@ -6,7 +8,8 @@ function getRange(data, percent) {
     var rel_offset = percent / 200,
         high = Math.ceil(data.length * (0.5 + rel_offset)),
         low = Math.floor(high - data.length * 2 * rel_offset),
-        sorted_datas, ret;
+        sorted_datas,
+        ret;
 
     if ((high - low / data.length) < percent / 100) {
         console.err('Too small window – ' + percent + ' wanted, ' +
@@ -31,15 +34,15 @@ function getRange(data, percent) {
     assert.ok(ret.from.soc < ret.to.soc, 'Lower soc range bound ' + ret.from.soc + ' bigger than upper ' + ret.to.soc);
 
     return ret;
-};
+}
 
 exports.groupData = function (in_data) {
     return lib.groupBy(in_data, function (compass) {
-        return 'compass' in compass ? 'success' : 'fail';
+        return compass.hasOwnProperty('compass') ? 'success' : 'fail';
     });
 };
 
-exports.prepareViewData = function(view_data, in_data, ncb_callback) {
+exports.prepareViewData = function (view_data, in_data, ncb_callback) {
     var users_data = lib.extend({success: [], fail: []},
                                 exports.groupData(in_data)),
         success_compasses;
@@ -75,8 +78,7 @@ exports.prepareViewData = function(view_data, in_data, ncb_callback) {
 
     // average
     if (view_data.avg === null || view_data.avg_coords === null) {
-        view_data.avg = lib.mapValues(lib.reduce(users_data.success,
-                                                           function (sums, compass) {
+        view_data.avg = lib.mapValues(lib.reduce(users_data.success, function (sums, compass) {
             sums.ec += compass.compass.ec;
             sums.soc += compass.compass.soc;
             return sums;
@@ -110,4 +112,4 @@ exports.prepareViewData = function(view_data, in_data, ncb_callback) {
 
 exports.errHandler = function (err, res) {
     return res.render('error', {title: 'Error', err: err, protocol: 'http'});
-}
+};

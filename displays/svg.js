@@ -1,3 +1,5 @@
+"use strict";
+
 var displays = require('./displays'),
     async = require('async'),
     lib = require('../lib');
@@ -22,7 +24,7 @@ function out(getData, res, raw) {
     } : {
         getCoords: getCoords,
 
-        title: 'SVG',
+        title: 'SVG'
     };
     async.waterfall([
         getData,

@@ -1,3 +1,5 @@
+"use strict";
+
 var displays = require('./displays'),
     async = require('async'),
     lib = require('../lib');
@@ -17,13 +19,13 @@ function out(getData, res, raw) {
 
         ranges: null,
         compasses: null
-    }: {
+    } : {
         getCoords: getCoords,
         title: 'HTML + CSS + PNG',
 
         ranges: null,
         compasses: null,
-        avg: null,
+        avg: null
     };
     async.waterfall([
         getData,

@@ -2,9 +2,11 @@
  * Abstract kompass functionality
  */
 
+"use strict";
+
 var lib = require('./lib.js'),
 
-    parse_regex = /(?:pc_)?(ec|soc)\s*=\s*([-+]?\s*[\d.]+)/ig;
+    parse_regex = /(?:pc_)?(ec|soc)\s*=\s*([\-+]?\s*[\d.]+)/ig;
 
 function get_kompass(kompass_getters, user, ncb_kompasshandler) {
     lib.untilValue(kompass_getters, function (getter, ncb_callback) {
@@ -12,7 +14,7 @@ function get_kompass(kompass_getters, user, ncb_kompasshandler) {
     }, lib.ncb_withErr(function (errs) {
         console.warn('Failed to get compass data for ' + user + ':\n' +
                      errs.map(function (v) { return "  - " + v; }).join('\n'));
-        return errs = 'Failed to get compass data for ' + user;
+        return 'Failed to get compass data for ' + user;
     }, ncb_kompasshandler));
 }
 
@@ -36,20 +38,18 @@ exports.Compass = function (ec, soc) {
     this.ec = ec;
     this.soc = soc;
 
-    if (typeof ec !== 'number' ||
-        typeof soc !== 'number') {
+    if (typeof ec !== 'number' || typeof soc !== 'number') {
         throw 'Invalid compass ' + this.toString();
     }
 
-    if ([-10, 0, 10].indexOf(ec) !== -1 &&
-        [-10, 0, 10].indexOf(soc) !== -1) {
+    if ([-10, 0, 10].indexOf(ec) !== -1 && [-10, 0, 10].indexOf(soc) !== -1) {
         throw 'Boring compass ' + this.toString();
     }
 
     if (ec < -10 || ec > 10 || soc < -10 || ec > 10) {
         throw 'Out-of-range compass ' + this.toString();
     }
-}
+};
 
 exports.Compass.prototype.toString = function () {
     return '(ec: ' + lib.numForOutput(this.ec) + ', ' +
