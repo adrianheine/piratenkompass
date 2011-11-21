@@ -4,9 +4,17 @@ var exports = module.exports = require('./underscore/underscore-min.js'),
     async = require('async'),
     lib = exports;
 
-exports.fn_ = function (method) {
+/**
+ * Construct a function which calls a specific method on it’s first parameter
+ *
+ * This is similar to Scala’s very concise, underscore-powered function
+ * literals:
+ *   col.map(_.toString) -> col.map(lib.fn_('toString'))
+ */
+exports.fn_ = function (method/*, ... */) {
+    var args = Array.prototype.slice.call(arguments, 1);
     return function (obj) {
-        obj[method]();
+        return obj[method].apply(obj, args);
     };
 };
 
@@ -24,6 +32,10 @@ exports.flattenOnce = function (inp) {
 
 exports.not = function (a) {
     return !a;
+};
+
+exports.minus = function (a, b) {
+    return a - b;
 };
 
 function firstHandler(handlers, test_func) {
@@ -82,11 +94,7 @@ exports.numForOutput = function (v) {
     return Number.prototype.toFixed.call(v, 2);
 };
 
-exports.numSort = function (list) {
-    return list.sort(function (a, b) {
-        return a < b ? -1 : (a > b ? 1 : 0);
-    });
-};
+exports.numSort = lib.fn_('sort', lib.minus);
 
 /**
  * An asynchronous forEach stopping after the first iterator call yielding a
