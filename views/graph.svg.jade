@@ -28,7 +28,8 @@ svg(xmlns:svg='http://www.w3.org/2000/svg', xmlns='http://www.w3.org/2000/svg',
          id="perc" + percent)
   g#benutzer
      - each compass in compasses
-       a(xlink:href=compass.url, title=compass.desc)
+       a(xlink:href=compass.url)
+         title #{compass.desc}
          circle(cx=compass.coords.x, cy=compass.coords.y, r='1.5',
                 style='fill:#ff0000; stroke:#000000; stroke-width:0.5px;')
    g#durchschnitt
