@@ -105,11 +105,9 @@ exports.prepareViewData = function (view_data, in_data, ncb_callback) {
         view_data.err_users = lib.pluck(users_data.fail, 'name');
     }
 
-    view_data.protocol = 'http';
-
     ncb_callback(null, view_data);
 };
 
 exports.errHandler = function (err, res) {
-    return res.render('error', {title: 'Error', err: err, protocol: 'http'});
+    return res.render('error', {title: 'Error', err: err});
 };
