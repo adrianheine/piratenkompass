@@ -1,6 +1,6 @@
 "use strict";
 
-var exports = module.exports = require('./underscore/underscore-min.js'),
+var exports = module.exports = require('underscore'),
     async = require('async'),
     lib = exports;
 
