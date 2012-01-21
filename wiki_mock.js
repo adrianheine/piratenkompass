@@ -13,7 +13,7 @@ exports.getRes = function (path, ncb) {
     }
 
     lib.retry(function (ncb_callback) {
-        fs.readFile('/home/adrian/piratenkompass/cache/' +
+        fs.readFile('/home/adrian/Projekte/piratenkompass/cache/' +
                     encodeURIComponent(decodeURIComponent(match[1])
                                        .replace(/(\.)|(\.\.)|(\/)|(:)/g, '__')).replace(/%20/g, '+'),
                     lib.ncb_withRes(lib.fn_('toString'), ncb_callback));
