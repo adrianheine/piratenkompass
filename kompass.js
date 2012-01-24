@@ -52,6 +52,8 @@ exports.Compass = function (ec, soc) {
 };
 
 exports.Compass.prototype.toString = function () {
-    return '(ec: ' + lib.numForOutput(this.ec) + ', ' +
-           'soc: ' + lib.numForOutput(this.soc) + ')';
+    var _this = this;
+    return '(' + ['ec', 'soc'].map(function (k) {
+        return k + ': ' + (typeof _this[k] === 'number' ? lib.numForOutput(_this[k]) : _this[k]);
+    }).join(', ') + ')';
 };

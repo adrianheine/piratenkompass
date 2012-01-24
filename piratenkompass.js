@@ -70,7 +70,7 @@ getCompass = (function () {
                         try {
                             compass = new kompass.Compass(compass.ec, compass.soc);
                         } catch (e) {
-                            return ncb_callback(e);
+                            return ncb_callback('Static compass data is bad: ' + e);
                         }
                         ncb_callback(null, compass);
                     },
@@ -80,7 +80,9 @@ getCompass = (function () {
                         async.waterfall([
                             userPageGetter(user),
                             kompass.parse_page
-                        ], ncb_callback);
+                        ], lib.ncb_withErr(function (err) {
+                            return 'User page contains bad compass: ' + err;
+                        }, ncb_callback));
                     },
                     // Parse included pages
                     function (user, ncb_callback) {
@@ -92,7 +94,9 @@ getCompass = (function () {
                                         async.waterfall([
                                             wiki.getPage.bind(undefined, v),
                                             kompass.parse_page
-                                        ], ncb_callback);
+                                        ], lib.ncb_withErr(function (err) {
+                                            return 'Included page ' + page + ' contains bad compass: ' + err;
+                                        }, ncb_callback));
                                     });
                                 });
                                 ncb_callback();
