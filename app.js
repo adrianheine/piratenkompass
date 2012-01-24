@@ -5,20 +5,19 @@
  */
 
 var express = require('express'),
+    app = module.exports = express.createServer(),
     piratenkompass = require('./piratenkompass'),
     displays = {};
-
-var app = module.exports = express.createServer();
 
 // Configuration
 
 app.configure(function () {
     app.set('views', __dirname + '/views');
     app.set('view engine', 'jade');
-//    app.use(express.bodyParser());
-//    app.use(express.methodOverride());
+    app.use(express.favicon(__dirname + '/favicon.ico'));
+    app.use('/static', express['static'](__dirname + '/static', {maxAge: 1000 * 60 * 60 * 24 * 365}));
+    app.use(express.logger('[:date] ":url" :status ":referrer" ":user-agent"'));
     app.use(app.router);
-    app.use('/static', express['static'](__dirname + '/static'));
 });
 
 app.configure('development', function () {
@@ -30,6 +29,10 @@ app.configure('production', function () {
 });
 
 // Routes
+app.get('/source', function (req, res, next) {
+    return res.redirect('https://github.com/adrianlang/piratenkompass', 301); // FIXME correct code
+});
+
 app.get('/:format?/:mod?', function (req, res, next) {
     // Support legacy URLs
     if (req.query.t) {
@@ -37,8 +40,8 @@ app.get('/:format?/:mod?', function (req, res, next) {
             display: '/html',
             big: '/svg',
             svg: '/svg/raw',
-            raw: '/csv/raw'
-    //        source: 
+            raw: '/csv/raw',
+            source: '/source'
         };
 
         if (map[req.query.t]) {
