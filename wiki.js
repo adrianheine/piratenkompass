@@ -21,7 +21,7 @@ exports.getRes = function (path, ncb_reshandler) {
                 ncb_callback(null, data);
             });
         }).on('error', function (e) {
-            console.warn("Got error: " + e.message);
+            console.warn("Got error: " + e.message + " for " + path + ", still retrying");
             ncb_callback(e.message);
         });
     }, lib.ncb_withErr(function (err) {
