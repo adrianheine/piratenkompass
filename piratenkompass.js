@@ -133,9 +133,7 @@ var wiki = require('./wiki'),
 // Get users from category
 process.nextTick(function getUsers() {
     wiki.getUsersInCat(function (users, ncb_register_done) {
-        users = users.filter(function (user) {
-            return blacklist.indexOf(user) === -1;
-        });
+        users = lib.difference(users, blacklist);
         ncb_register_done(null, users);
     }, function (err, res) {
         if (err) {
