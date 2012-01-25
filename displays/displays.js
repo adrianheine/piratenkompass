@@ -38,12 +38,12 @@ function getRange(data, percent) {
 
 exports.groupData = function (in_data) {
     return lib.groupBy(in_data, function (compass) {
-        return compass.hasOwnProperty('compass') ? 'success' : 'fail';
+        return compass.hasOwnProperty('compass') ? 'success' : (compass.not_init ? 'not_init' : 'fail');
     });
 };
 
 exports.prepareViewData = function (view_data, in_data, ncb_callback) {
-    var users_data = lib.extend({success: [], fail: []},
+    var users_data = lib.extend({success: [], fail: [], not_init: []},
                                 exports.groupData(in_data)),
         success_compasses;
 
@@ -98,6 +98,7 @@ exports.prepareViewData = function (view_data, in_data, ncb_callback) {
     // Count of compasses
     if (view_data.count === null) {
         view_data.count = users_data.success.length;
+        view_data.not_init_count = users_data.not_init.length;
     }
 
     // error users

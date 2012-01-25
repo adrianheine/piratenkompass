@@ -16,6 +16,8 @@ html(lang='de')
       | Ausgewertet wird die
       a(href="http://wiki.piratenpartei.de/Kategorie%3ABenutzer_hat_politischen_Kompass", title="„Kategorie:Benutzer hat politischen Kompass“ im Piratenwiki") Kategorie:Benutzer hat politischen Kompass
       |  im Wiki der Piratenpartei Deutschland. Insgesamt sind die Daten von #{count} Benutzern verfügbar.
+      - if (not_init_count > 0)
+        | Von #{not_init_count} Benutzern wurden die Profile noch nicht verarbeitet; das kann noch einige Minuten dauern.
     - if (err_users.length > 0)
       p Fehler gab es beim Lesen der Kompassdaten von #{err_users.join(', ')}.
 

@@ -10,7 +10,7 @@ var lib = require('./lib.js'),
 
 function get_kompass(kompass_getters, user, ncb_kompasshandler) {
     lib.untilValue(kompass_getters, function (getter, ncb_callback) {
-        getter(user, ncb_callback);
+        getter(user, ncb_callback, kompass_getters);
     }, lib.ncb_withErr(function (errs) {
         console.warn('Failed to get compass data for ' + user + ':\n' +
                      errs.map(function (v) { return "  - " + v; }).join('\n'));
