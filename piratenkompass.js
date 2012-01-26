@@ -6,32 +6,30 @@ var wiki = require('./wiki'),
     lib = require('./lib'),
     async = require('async'),
 
-    blacklist = ['Mms', 'Mr. Modding', 'LordSnow', 'Eduba', 'Bernd der pirat',
-        'Zwergenpaladin', // 2010-12-31: -10,-10
-        'ThomasDL',       // 2010-12-31: 0,0
-        'Triplem',        // 2010-12-31
-        'Smokerle',       // 2010-12-31: 0,0
-        'Jhartmann',      // 2010-12-31: -10,-10
-        'Salpeterer',     // 2010-12-31: 0,0
-        'Reeder',         // 2010-12-31: 0,0
-        'Reaver',         // 2010-12-31: 0,0
-        'East',           // 2010-12-31: 0,0
-        'Pradetto'        // 2010-12-31: 0,0
+    try_blacklisted = true,
+
+    blacklist = [
+        // 2012-01-26
+        'Apulver', 'AlexKramer', 'Eduba', 'East', 'Goethe', 'Hippocampus',
+        'Jhartmann', 'Khamu', 'Kingpin3k', 'Mr. Modding', 'Pirat Florian',
+        'S3sebastian', 'Schütti', 'Slasher006', 'Reaver', 'Smidty',
+        'Starfilar', 'VideoPirat', 'Reeder', 'TheOrigin', 'Zwergenpaladin',
+        'Smokerle', 'Salpeterer', 'Res', 'ThomasDL', 'Dokx', 'LordSnow',
+        'Mms', 'Pradetto', 'Bootsmann', 'Blackwolf', 'DevilFalcon', 'Herr Bauer'
     ],
 
     static_kompass = {
-        'Acamir'     : {ec: -0.6, soc: -5.1},
-        'B.pwned'    : {ec: -4.8, soc: -5.8},
-        'DimMyPrp'   : {ec: -5.8, soc: -3.8},
-        'Just-Ben'   : {ec: -5.5, soc: -5.6},
-        'MönchA'     : {ec: -3.7, soc: -7.3},
-        'Medelmann'  : {ec: -6.8, soc: -6.5},
-        'Onineko'    : {ec: -5.3, soc: -6.3}, //2010-12-31
-        'Petalor'    : {ec: -6.8, soc: -6.5}, //2010-12-31
-        'Snake D'    : {ec: -5.5, soc: -2.9}, //2010-12-31
-        'Transhuman' : {ec: -7.1, soc: -5.2}, //2010-12-31
-        'ValiDOM'    : {ec: -3.5, soc: -2.8}, //2010-12-31
-        'Vampi'      : {ec: -4.7, soc: -8.1}
+        // 2012-01-26
+        'Helge Eichelberg': {ec: -4.75, soc: -8.87}, // Benutzer:Helge_Eichelberg/PolitischerKompass
+        'Sailor2010':       {ec:  2.12, soc: -3.08},
+        'Acamir':           {ec: -0.6, soc: -5.1},
+        'Onineko':          {ec: -5.3, soc: -6.3},
+        'ValiDOM':          {ec: -3.5, soc: -2.8},
+        'Vampi':            {ec: -4.7, soc: -8.1},
+        'Snake D':          {ec: -5.5, soc: -2.9},
+        'Petalor':          {ec: -6.8, soc: -6.5},
+        'MönchA':           {ec: -3.7, soc: -7.3},
+        'Medelmann':        {ec: -6.8, soc: -6.5},
     },
 
     getCompass = (function () {
@@ -133,7 +131,9 @@ var wiki = require('./wiki'),
 // Get users from category
 process.nextTick(function getUsers() {
     wiki.getUsersInCat(function (users, ncb_register_done) {
-        users = lib.difference(users, blacklist);
+        if (!try_blacklisted) {
+            users = lib.difference(users, blacklist);
+        }
         ncb_register_done(null, users);
     }, function (err, res) {
         if (err) {
@@ -141,7 +141,6 @@ process.nextTick(function getUsers() {
             setTimeout(getUsers, 0);
             return;
         }
-
         var cur_users = lib.uniq(lib.flatten(res)),
             old_users = lib.keys(compasses);
 
