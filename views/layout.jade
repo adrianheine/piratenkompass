@@ -14,12 +14,18 @@ html(lang='de')
     p Der Durchschnittspunkt ist #{avg.soc}, #{avg.ec}. Die Rahmen zeigen die 90%- bzw. 80%-Bereiche.
     p
       | Ausgewertet wird die
-      a(href="http://wiki.piratenpartei.de/Kategorie%3ABenutzer_hat_politischen_Kompass", title="„Kategorie:Benutzer hat politischen Kompass“ im Piratenwiki") Kategorie:Benutzer hat politischen Kompass
+      a(href=getPageURL('Kategorie:Benutzer hat politischen Kompass'), title="„Kategorie:Benutzer hat politischen Kompass“ im Piratenwiki") Kategorie:Benutzer hat politischen Kompass
       |  im Wiki der Piratenpartei Deutschland. Insgesamt sind die Daten von #{count} Benutzern verfügbar.
       - if (not_init_count > 0)
         | Von #{not_init_count} Benutzern wurden die Profile noch nicht verarbeitet; das kann noch einige Minuten dauern.
     - if (err_users.length > 0)
-      p Fehler gab es beim Lesen der Kompassdaten von #{err_users.join(', ')}.
+      p
+        | Fehler gab es beim Lesen der Kompassdaten von 
+        - for user,i in err_users
+          a(href=getUserPageURL(user),title='Benutzer:#{user} im Piratenwiki') #{user}
+          - if (i < err_users.length - 1)
+            |, 
+        |.
 
     #footer
       | Adrian Lang (<a href="https://adrianlang.de/id">id</a>), 2009–2012

@@ -52,7 +52,9 @@ exports.prepareViewData = function (view_data, in_data, ncb_callback) {
         view_data = lib.extend(view_data, {
             avg: null,
             err_users: null,
-            count: null
+            count: null,
+            getUserPageURL: wiki.getUserPageURL,
+            getPageURL: wiki.getPageURL
         });
     }
 
