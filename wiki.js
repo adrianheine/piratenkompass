@@ -2,15 +2,19 @@
 var http = require('http'),
     async = require('async'),
     lib = require('./lib'),
+
+    wiki = module.exports = {},
+
     host = 'wiki.piratenpartei.de',
     category = 'Benutzer hat politischen Kompass',
     ns_text = 'Benutzer:',
     ns = new RegExp('^' + ns_text),
-    exports = module.exports = {},
     tpl_ns = 'Vorlage:',
-    wiki = exports;
 
-exports.getRes = function (path, ncb_reshandler) {
+    // Page in the cat if not user page itself
+    orig_pages = {};
+
+wiki.getRes = function (path, ncb_reshandler) {
     lib.retry(function (ncb_callback) {
         http.get({host: host, headers: {Connection: 'keep-alive'},
                   path: path}, function (res) {
@@ -29,7 +33,7 @@ exports.getRes = function (path, ncb_reshandler) {
     }, ncb_reshandler));
 };
 
-exports.getCatMembers = function (cb_datahandler, ncb_finishhandler) {
+wiki.getCatMembers = function (cb_datahandler, ncb_finishhandler) {
     var path = '/wiki/api.php?action=query'
                           + '&list=categorymembers'
                           + '&cmtitle=' + encodeURIComponent('Category:' + category)
@@ -53,7 +57,7 @@ exports.getCatMembers = function (cb_datahandler, ncb_finishhandler) {
     }, ncb_finishhandler, '');
 };
 
-exports.getPage = function (page, ncb_pagehandler) {
+wiki.getPage = function (page, ncb_pagehandler) {
     async.waterfall([
         wiki.getRes.bind(undefined, '/' + encodeURIComponent(page) + '?action=raw'),
         // Resolve redirects
@@ -68,31 +72,39 @@ exports.getPage = function (page, ncb_pagehandler) {
     ], ncb_pagehandler);
 };
 
-function getUsersInCat(cb_datahandler, ncb_finishhandler) {
+wiki.getUsersInCat = function (cb_datahandler, ncb_finishhandler) {
     wiki.getCatMembers(function (members, ncb_register_done) {
         var users = members.filter(function (item) {
             return item.ns === 2;
         }).map(function (item) {
-            return item.title.replace(ns, '').match(/^([^\/]+)/)[1];
+            var user = item.title.replace(ns, '').match(/^([^\/]+)/)[1];
+            if (wiki.getUserPageName(user) !== item.title) {
+                orig_pages[user] = item.title;
+            }
+            return user;
         });
         cb_datahandler(lib.uniq(users), ncb_register_done);
     }, ncb_finishhandler);
-}
+};
 
-function getUserPageURL(user) {
-    return 'http://' + host + '/' + encodeURIComponent(ns_text + user);
-}
+wiki.getPageURL = function (page) {
+    return 'http://' + host + '/' + encodeURIComponent(page.replace(/ /g, '_'));
+};
 
-exports.getUserPageName = function (user) {
+wiki.getUserPageURL = function (user) {
+    return wiki.getPageURL(wiki.getUserPageName(user));
+};
+
+wiki.getUserPageName = function (user) {
     return ns_text + user;
 };
 
-exports.getUserPage = function (user, ncb) {
-    return wiki.getPage(wiki.getUserPageName(user), ncb);
+wiki.getUserPage = function (user, ncb) {
+    return wiki.getPage(orig_pages[user] || wiki.getUserPageName(user), ncb);
 };
 
-exports.getIncludedPageNames = function (page) {
-    var res = [], include_regexp = /\{\{([^}|]+)(|[^}]*)?\}\}/g, match;
+wiki.getIncludedPageNames = function (page) {
+    var res = [], include_regexp = /\{\{\s*([^}|{#\s][^}|]*)(|[^}]*)?\}\}/g, match;
     while (match = include_regexp.exec(page)) {
         switch (match[1].indexOf(':')) {
         case -1:
@@ -108,6 +120,3 @@ exports.getIncludedPageNames = function (page) {
     }
     return res;
 };
-
-exports.getUsersInCat = getUsersInCat;
-exports.getUserPageURL = getUserPageURL;
