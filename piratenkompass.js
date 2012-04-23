@@ -2,7 +2,7 @@
 "use strict";
 
 var wiki = require('./wiki'),
-  kompass = require('./kompass'),
+  compass = require('./compass'),
   lib = require('./lib'),
   async = require('async'),
 
@@ -31,7 +31,7 @@ var wiki = require('./wiki'),
     'MönchA':       {ec: -3.7, soc: -7.3},
     'Medelmann':    {ec: -6.8, soc: -6.5},
   }, function (c) {
-    return new kompass.Compass(c.ec, c.soc);
+    return new compass.Compass(c.ec, c.soc);
   }),
 
   getCompass = (function () {
@@ -60,7 +60,7 @@ var wiki = require('./wiki'),
       function (user, ncb_callback) {
         async.waterfall([
           userPageGetter(user),
-          kompass.parse_page
+          compass.parsePage
         ], lib.ncb_withErr(function (err) {
           return 'User page contains bad compass: ' + err;
         }, ncb_callback));
@@ -74,7 +74,7 @@ var wiki = require('./wiki'),
               getters.push(function (user, ncb_callback) {
                 async.waterfall([
                   wiki.getPage.bind(undefined, v),
-                  kompass.parse_page
+                  compass.parsePage
                 ], lib.ncb_withErr(function (err) {
                   return 'Included page ' + v + ' contains bad compass: ' + err;
                 }, ncb_callback));
@@ -88,7 +88,7 @@ var wiki = require('./wiki'),
 
     return function (user, ncb_compasshandler) {
       // Build a new getters array on each run.
-      kompass.get_kompass(def_getters.slice(0), user, ncb_compasshandler);
+      compass.getCompass(def_getters.slice(0), user, ncb_compasshandler);
     };
   }()),
 

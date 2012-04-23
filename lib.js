@@ -37,6 +37,10 @@ lib.minus = function (a, b) {
   return a - b;
 };
 
+lib.plus = function (a, b) {
+  return a + b;
+};
+
 function firstHandler(handlers, test_func) {
   var res = null;
   handlers.some(function () {
@@ -196,4 +200,12 @@ lib.cached = function (val_producer, expiry) {
       ncb_val_handler(null, value);
     }
   };
+};
+
+lib.reduceMatches = function (regex, target, matchHandler, memo) {
+  var match;
+  while (match = regex.exec(target)) {
+    memo = matchHandler(memo, match);
+  }
+  return memo;
 };
