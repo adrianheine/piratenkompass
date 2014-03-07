@@ -79,6 +79,7 @@ app.get('/:format?/:mod?', (function () {
       req.params.format = req.accepts('xhtml') ? 'svg' : 'html';
     }
 
+    res.local('embedPath', 'http://piratenkompass.adrianlang.de/' + req.params.format + '/raw');
     // Output the stuff
     getDisplay(req.params.format).out(piratenkompass.getKompassdata, res,
       req.params.mod === 'raw');
