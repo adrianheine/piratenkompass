@@ -2,30 +2,49 @@
 html(lang='de')
   include head
   body
-    ul(style="text-align: center;", class="horlist")
-        li: a(href="/html", title="Seite mit PNG-Bild und CSS") PNG-Version
-        li: a(href="/svg", title="Seite mit SVG-Bild") SVG-Version
-        li: a(href="/svg/raw", title="SVG-Bild") SVG solo
-        li: a(href="/csv", title="Rohdaten als CSV") Rohdaten
-        li: a(href="/source", title="Quelltext") Quelltext
-    !{body}
+    h1 Piratenkompass | #{title}
 
-    h2 Statistik
-    p Der Durchschnittspunkt ist #{avg.soc}, #{avg.ec}. Die Rahmen zeigen die 90%- bzw. 80%-Bereiche.
-    p
-      | Ausgewertet wird die
-      a(href=getPageURL('Kategorie:Benutzer hat politischen Kompass'), title="„Kategorie:Benutzer hat politischen Kompass“ im Piratenwiki") Kategorie:Benutzer hat politischen Kompass
-      |  im Wiki der Piratenpartei Deutschland. Insgesamt sind die Daten von #{count} Benutzern verfügbar.
-      - if (not_init_count > 0)
-        | Von #{not_init_count} Benutzern wurden die Profile noch nicht verarbeitet; das kann noch einige Minuten dauern.
-    - if (err_users.length > 0)
+    div.main
+      h2 Politischer Kompass
+      !{body}
       p
-        | Fehler gab es beim Lesen der Kompassdaten von 
-        - for user,i in err_users
-          a(href=getUserPageURL(user),title='Benutzer:#{user} im Piratenwiki') #{user}
-          - if (i < err_users.length - 1)
-            |, 
-        |.
+        | Verlinken:
+        a(href="/svg/raw") /svg/raw
+
+    div.aside
+      h2 Beschreibung
+      p
+        | Der
+        a(href="http://de.wikipedia.org/wiki/Politisches_Spektrum#Politischer_Kompass") politische Kompass 
+        | ist eine Technik zur Positionierung politischer Ansichten auf einem zweidimensionalen Graphen.
+      p
+        | Der Piratenkompass wertet die Angaben vieler Mitglieder, Sympathisant_innen und Interessent_innen der Piratenpartei Deutschland aus, und zwar jener, die ihren Kompass in der 
+        a(href=getPageURL('Kategorie:Benutzer hat politischen Kompass'), title="„Kategorie:Benutzer hat politischen Kompass“ im Piratenwiki") Kategorie:Benutzer hat politischen Kompass
+        |  im Wiki der Piratenpartei Deutschland angegeben haben.
+      p
+        | Obwohl ich diese vereinfachende Darstellung politischer Positionen durchaus für kritikwürdig halte, möchte ich die gute Gelegenheit, diese öffentlichen Daten auszuwerten, nicht verstreichen lassen. So entsteht zumindest ein grober Eindruck der politischen Positionen in der Partei selbst und ihrem Umfeld.
+      h2 Statistik
+      p
+        | Der aktuelle Durchschnitt aller Pirat_innen ist #{avg.soc}, #{avg.ec}. Die Rahmen zeigen die 90%- bzw. 80%-Bereiche.
+      p
+        | Aktuell werden die Kompasse von #{count} Benutzern angezeigt.
+        - if (not_init_count > 0)
+          | Von #{not_init_count} Benutzern wurden die Profile noch nicht verarbeitet; das kann noch einige Minuten dauern.
+      - if (err_users.length > 0)
+        p
+          | Fehler gab es beim Lesen der Kompassdaten von 
+          - for user,i in err_users
+            a(href=getUserPageURL(user),title='Benutzer:#{user} im Piratenwiki') #{user}
+            - if (i < err_users.length - 1)
+              |, 
+          |.
+
+      h2 Navigation
+      ul
+        li: a(href="/svg", title="Seite mit SVG-Bild") SVG-Version
+        li: a(href="/html", title="Seite mit PNG-Bild und CSS") PNG-Version
+        li: a(href="/csv", title="Rohdaten als CSV") CSV-Version
+        li: a(href="/source", title="Quelltext") Quelltext
 
     #footer
       | Adrian Lang (<a href="https://adrianlang.de/id">id</a>), 2009–2012

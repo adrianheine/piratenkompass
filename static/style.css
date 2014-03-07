@@ -51,15 +51,6 @@ a:hover {
     text-decoration: underline;
 }
 
-#footer {
-    border-top:0.1em solid;
-    clear:right;
-    float:right;
-    margin-top:0.9em;
-    padding:0.1em 0 0 5em;
-    text-align: right;
-}
-
 ul {
     list-style-type:none;
 }
@@ -75,6 +66,10 @@ li {
     padding: 0 0.5em;
 }
 
+p {
+    padding-bottom: 0.5em;
+}
+
 .identifier {
     color: #d0a040;
 }
@@ -84,8 +79,25 @@ ul.horlist li {
     border-right: none;
 }
 
-p {
-    padding-bottom: 0.5em;
+.main, .aside {
+  float: left;
+}
+
+.main {
+  width: 60%;
+}
+
+.aside {
+  width: 40%;
+}
+
+#footer {
+    border-top:0.1em solid;
+    clear:both;
+    float:right;
+    margin-top:0.9em;
+    padding:0.1em 0 0 5em;
+    text-align: right;
 }
 
 /* Compass */
