@@ -23,4 +23,4 @@ TESTS="-path './test/*'"
 
 sh -c "$FIND_JS ! $STATIC ! $TESTS -print0 | $JSHINT_NODE
 $FIND_JS $TESTS -print0 | $JSHINT_TESTS
-$FIND_JS $STATIC -print0 | $JSHINT_STATIC
+$FIND_JS $STATIC -print0 | $JSHINT_STATIC"
