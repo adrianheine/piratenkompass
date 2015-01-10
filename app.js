@@ -31,7 +31,7 @@ app.configure('production', function () {
 
 // Redirect to source
 app.get('/source', function (req, res, next) {
-  return res.redirect('https://github.com/adrianlang/piratenkompass', 307);
+  return res.redirect('https://github.com/adrianheine/piratenkompass', 307);
 });
 
 // Support legacy URLs
@@ -79,7 +79,7 @@ app.get('/:format?/:mod?', (function () {
       req.params.format = req.accepts('xhtml') ? 'svg' : 'html';
     }
 
-    res.local('embedPath', 'http://piratenkompass.adrianlang.de/' + req.params.format + '/raw');
+    res.local('embedPath', 'http://piratenkompass.adrianheine.de/' + req.params.format + '/raw');
     // Output the stuff
     getDisplay(req.params.format).out(piratenkompass.getKompassdata, res,
       req.params.mod === 'raw');

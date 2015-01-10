@@ -4,7 +4,7 @@ Piratenkompass
 Authors
 -------
 
-Adrian Lang, 2009–2012
+Adrian Heine, 2009–2012
 SVG-Code: Stephan Beyer, 2009
 
 License
