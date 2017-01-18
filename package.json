@@ -3,12 +3,13 @@
   , "version": "0.0.1"
   , "private": true
   , "dependencies": {
-      "express": "~2.0"
-    , "jade": ">= 0.0.1"
-    , "underscore": "",
-    "async": "",
+    "express": "~2.5",
+    "underscore": "",
+    "async": ""
+  }, "devDependencies": {
+    "jade": ">= 0.0.1",
     "mocha": "",
     "should": "",
     "jshint": ""
-  }
+  }, "main": "app.js"
 }
