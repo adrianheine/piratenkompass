@@ -46,7 +46,12 @@ wiki.getCatMembers = function (cb_datahandler, ncb_finishhandler) {
       if (err) {
         return ncb_finishhandler('Cannot get category members for ›' + category + '‹.');
       }
-      var content = JSON.parse(data);
+      var content;
+      try {
+        content = JSON.parse(data);
+      } catch (e) {
+        return ncb_finishhandler('Cannot get category members for ›' + category + '‹.');
+      }
 
       if (content['query-continue']) {
         add_task(content['query-continue'].categorymembers.cmcontinue);
