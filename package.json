@@ -5,9 +5,9 @@
   , "dependencies": {
     "express": "~2.5",
     "underscore": "",
-    "async": ""
+    "async": "",
+    "jade": "< 1.0.0"
   }, "devDependencies": {
-    "jade": ">= 0.0.1",
     "mocha": "",
     "should": "",
     "jshint": ""
