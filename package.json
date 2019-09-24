@@ -5,7 +5,7 @@
   , "dependencies": {
     "express": "~2.5",
     "underscore": "",
-    "async": "",
+    "async": "^2.0.0",
     "jade": "< 1.0.0"
   }, "devDependencies": {
     "mocha": "",
